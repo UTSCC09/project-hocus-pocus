@@ -1,0 +1,17 @@
+.login-form {
+  margin: auto;
+  text-align: center;
+}
+
+Form {
+  border: 2px lightgray solid;
+  border-radius: 10px;
+  padding: 20px;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+.btn {
+  margin: 0px 5px;
+}
