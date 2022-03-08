@@ -1,4 +1,4 @@
-.login-form {
+.login-page {
   margin: auto;
   text-align: center;
 }
@@ -7,7 +7,7 @@ Form {
   border: 2px lightgray solid;
   border-radius: 10px;
   padding: 20px;
-  width: 50%;
+  width: 500px;
   margin: auto;
   text-align: center;
 }

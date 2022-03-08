@@ -1,12 +1,38 @@
-import './App.css';
-import Login from './components/Login';
+import React, { Component } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <Login />
-    </div>
-  );
+import "./App.css";
+import LoginPage from "./pages/Login";
+import AuthContext from "./context/auth-context";
+
+class App extends Component {
+  state = {
+    token: null,
+    userId: null
+  }
+
+  login = (userId, token, tokenExpiration) => {
+    this.setState({ userId, token });
+  }
+
+  logout = () => {
+    this.setState({ userId: null, token: null });
+  }
+
+  render() {
+    return (
+      <BrowserRouter>
+        <AuthContext.Provider value={{ token: this.state.token, userId: this.state.userId, login: this.login, logout: this.logout }}>
+          <Routes>
+            {/* <Route path="/" exact /> */}
+            <Route path="/" element={<LoginPage />} />
+          </Routes>
+        </AuthContext.Provider>
+      </BrowserRouter>
+    );
+  }
+
+  
 }
 
 export default App;
