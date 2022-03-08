@@ -1,0 +1,8 @@
+{
+  "env": {
+    "MONGO_USER": "admin",
+    "MONGO_PASSWORD": "vR8Rxghnhxj0rLtW",
+    "MONGO_DB": "keyboard-music-dev",
+    "JWT_SECRET": "somesecretkey"
+  }
+}
