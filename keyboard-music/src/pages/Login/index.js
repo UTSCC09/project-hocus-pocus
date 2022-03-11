@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Form } from "react-bootstrap";
 import "./index.css";
 import AuthContext from "../../context/auth-context";
+import network from "../../helpers/network";
 
 class LoginPage extends Component {
   state = {
@@ -14,66 +15,30 @@ class LoginPage extends Component {
   signUp = (e) => {
     e.preventDefault();
 
-    const requestBody = {
-      query: `
-        mutation {
-          createUser(userInput: { email: "${this.state.email}", password: "${this.state.password}" }) {
-            _id
-            email
-          }
-        }
-      `,
-    };
-
-    fetch("http://localhost:8000/api", {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to sign up");
-        }
-        return res.json();
-      })
+    network(
+      "mutation",
+      `createUser(userInput: { email: "${this.state.email}", password: "${this.state.password}" })`,
+      `_id
+      email`
+    )
       .then((resData) => {
         console.log(resData);
       })
       .catch((err) => {
-        console.log(err);
+        console.warn(err);
       });
   };
 
   signIn = (e) => {
     e.preventDefault();
 
-    const requestBody = {
-      query: `
-        query {
-          login(email: "${this.state.email}", password: "${this.state.password}") {
-            userId
-            token
-            tokenExpiration
-          }
-        }
-      `,
-    };
-
-    fetch("http://localhost:8000/api", {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to sign in");
-        }
-        return res.json();
-      })
+    network(
+      "query",
+      `login(email: "${this.state.email}", password: "${this.state.password}")`,
+      `userId
+      token
+      tokenExpiration`
+    )
       .then((resData) => {
         if (resData.data.login.token) {
           this.context.login(
@@ -84,7 +49,7 @@ class LoginPage extends Component {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.warn(err);
       });
   };
 
