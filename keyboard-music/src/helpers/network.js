@@ -29,13 +29,17 @@ export default function network(type, endpoint, requestFields) {
     `,
   };
 
-  return fetch("http://localhost:8000/api", {
-    method: "POST",
-    body: JSON.stringify(requestBody),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then((res) => {
-    return res.json();
-  });
+  return new Promise((resolve, reject) => {
+    fetch("http://localhost:8000/api", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      resolve(res.json());
+    }).catch((err) => {
+      reject(new Error(err));
+    });
+  }); 
 }

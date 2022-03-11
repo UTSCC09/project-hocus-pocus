@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Alert } from "react-bootstrap";
+
 import "./index.css";
 import AuthContext from "../../context/auth-context";
 import network from "../../helpers/network";
@@ -8,6 +9,8 @@ class LoginPage extends Component {
   state = {
     email: "",
     password: "",
+    alertMessage: "",
+    variant: "",
   };
 
   static contextType = AuthContext;
@@ -15,22 +18,33 @@ class LoginPage extends Component {
   signUp = (e) => {
     e.preventDefault();
 
+    if (!this.state.email.trim() || !this.state.password.trim()) {
+      return;
+    }
+
     network(
       "mutation",
       `createUser(userInput: { email: "${this.state.email}", password: "${this.state.password}" })`,
       `_id
       email`
-    )
-      .then((resData) => {
-        console.log(resData);
-      })
-      .catch((err) => {
-        console.warn(err);
+    ).then((res) => {
+      this.setState({
+        email: res.data ? "" : this.state.email,
+        password: res.data ? "" : this.state.password,
+        variant: res.data ? "success" : "danger",
+        alertMessage: res.data
+          ? `Success! You can use ${res.data.createUser.email} to sign in now.`
+          : res.errors[0].message,
       });
+    });
   };
 
   signIn = (e) => {
     e.preventDefault();
+
+    if (!this.state.email.trim() || !this.state.password.trim()) {
+      return;
+    }
 
     network(
       "query",
@@ -38,31 +52,38 @@ class LoginPage extends Component {
       `userId
       token
       tokenExpiration`
-    )
-      .then((resData) => {
-        if (resData.data.login.token) {
-          this.context.login(
-            resData.data.login.userId,
-            resData.data.login.token,
-            resData.data.login.tokenExpiration
-          );
+    ).then((res) => {
+      if (res.data) {
+        let data = res.data.login;
+        if (data.token) {
+          this.context.login(data.userId, data.token, data.tokenExpiration);
+          this.setState({
+            email: "",
+            password: "",
+            variant: "",
+            alertMessage: "",
+          });
         }
-      })
-      .catch((err) => {
-        console.warn(err);
-      });
+      } else {
+        this.setState({
+          variant: "danger",
+          alertMessage: res.errors[0].message,
+        });
+      }
+    });
   };
 
   render() {
     return (
       <div className="login-page">
+        <Alert variant={this.state.variant}>{this.state.alertMessage}</Alert>
         <Form>
           <Form.Group className="mb-3">
             <Form.Label className="label">Email address</Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter email"
-              value={this.email}
+              value={this.state.email}
               onChange={(e) => this.setState({ email: e.target.value })}
               autoFocus
             />
@@ -73,7 +94,7 @@ class LoginPage extends Component {
             <Form.Control
               type="password"
               placeholder="Enter password"
-              value={this.password}
+              value={this.state.password}
               onChange={(e) => this.setState({ password: e.target.value })}
             />
           </Form.Group>
