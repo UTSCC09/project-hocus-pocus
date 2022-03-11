@@ -56,7 +56,6 @@ class LoginPage extends Component {
   render() {
     return (
       <div className="login-page">
-        <h1>Sign In / Sign Up</h1>
         <Form>
           <Form.Group className="mb-3">
             <Form.Label className="label">Email address</Form.Label>
