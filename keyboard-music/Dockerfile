@@ -9,7 +9,7 @@ RUN npm install
 RUN npm install react-scripts@3.4.1 -g
 COPY . ./
 
-RUN npm build
+RUN npm run build
 
 # nginx
 FROM nginx:1.21.6-alpine
