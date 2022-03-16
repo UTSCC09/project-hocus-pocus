@@ -13,7 +13,7 @@ const Navigation = (props) => {
           <Navbar.Brand href="/">Keyboard Music</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/test">Test</Nav.Link>
+            {/* <Nav.Link href="/test">Test</Nav.Link> */}
           </Nav>
           <Nav>
             {!context.token && (

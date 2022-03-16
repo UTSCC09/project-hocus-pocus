@@ -14,7 +14,7 @@ RUN npm run build
 # nginx
 FROM nginx:1.21.6-alpine
 COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/ngix/conf.d/default.conf
+# COPY nginx.conf /etc/ngix/conf.d/default.conf
 
 EXPOSE 80
 
