@@ -1,0 +1,67 @@
+/* code referenced and modified from https://codepen.io/irajsuhail/pen/mYMZVm */
+
+.keyboard {
+  /* horizontally centered */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(30, 30px);
+  grid-template-rows: repeat(5, 60px);
+  grid-gap: 8px;
+}
+
+.key {
+  grid-column: span 2;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 17px;
+  transition: all 0.07s ease;
+  color: #eee;
+  border: antiquewhite solid 3px;
+  border-radius: 10px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 12px black;
+}
+
+.keyName {
+  font-size: 20px;
+  color: orange;
+}
+
+.keyFunction {
+  font-size: 12px;
+  color: lightcoral;
+}
+
+.key:hover {
+  transform: scale(1.1);
+  border-color: lightblue;
+  box-shadow: 0 0 15px lightblue;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.size3 {
+  grid-column: span 3;
+}
+
+.size4 {
+  grid-column: span 4;
+}
+
+.size5 {
+  grid-column: span 5;
+}
+
+.space {
+  grid-column: 10 / 20;
+}
+
+.disabled {
+  opacity: 0.5;
+}
