@@ -11,6 +11,7 @@ services:
   #       - MONGO_DB=${MONGO_DB}
   #       - JWT_SECRET=${JWT_SECRET}
   #     dockerfile: Dockerfile
+  #   image: minqiz/backend-prod:latest
   #   ports:
   #     - 8000:8000
 
@@ -18,5 +19,6 @@ services:
     build:
       context: ./keyboard-music
       dockerfile: Dockerfile
+    image: minqiz/frontend-prod:latest
     ports:
       - 80:80
