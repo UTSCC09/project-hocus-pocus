@@ -1,5 +1,5 @@
 # react
-FROM node:lts-alpine
+FROM node:lts-alpine as build
 
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
