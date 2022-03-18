@@ -10,12 +10,12 @@ const isAuth = require('./middleware/is-auth');
 
 const app = express();
 
-const PORT = 8000;
+const PORT = process.env.PORT;
 
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:80');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
@@ -33,10 +33,11 @@ app.use('/api', graphqlHTTP({
 }));
 
 mongoose.connect(
-  `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.weexo.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
+  `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@127.0.0.1:27017/${process.env.MONGO_DB}`
 )
 .then(() => {
   app.listen(PORT);
+  console.log("connected to mongodb!");
   // TODO: https
   // https.createServer(config, app).listen(PORT, (err) => {
   //   if (err) console.log(err);

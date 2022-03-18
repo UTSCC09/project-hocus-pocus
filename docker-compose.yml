@@ -1,19 +1,19 @@
 version: "3.8"
 
 services:
-  # backend-prod:
-  #   build:
-  #     context: ./backend
-  #     args:
-  #       - PORT=8000
-  #       - MONGO_USER=${MONGO_USER}
-  #       - MONGO_PASSWORD=${MONGO_PASSWORD}
-  #       - MONGO_DB=${MONGO_DB}
-  #       - JWT_SECRET=${JWT_SECRET}
-  #     dockerfile: Dockerfile
-  #   image: minqiz/backend-prod:latest
-  #   ports:
-  #     - 8000:8000
+  backend-prod:
+    build:
+      context: ./backend
+      args:
+        - PORT=8000
+        - MONGO_USER=${MONGO_USER}
+        - MONGO_PASSWORD=${MONGO_PASSWORD}
+        - MONGO_DB=${MONGO_DB}
+        - JWT_SECRET=${JWT_SECRET}
+      dockerfile: Dockerfile
+    image: minqiz/backend-prod:latest
+    ports:
+      - 8000:8000
 
   frontend-prod:
     build:
