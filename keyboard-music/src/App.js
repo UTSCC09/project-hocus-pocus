@@ -33,7 +33,7 @@ class App extends Component {
         >
           <Navigation />
           <Routes>
-            {/* <Route path="/" exact /> */}
+            <Route path="/" exact element={<LoginPage />} />
             <Route path="/auth" element={<LoginPage />} />
           </Routes>
         </AuthContext.Provider>
