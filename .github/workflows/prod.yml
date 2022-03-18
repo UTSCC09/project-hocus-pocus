@@ -11,12 +11,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # env:
-    #   PORT: ${{ secrets.PORT }}
-    #   MONGO_USER: ${{ secrets.MONGO_USER }}
-    #   MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-    #   MONGO_DB: ${{ secrets.MONGO_DB }}
-    #   JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    env:
+      MONGO_USER: ${{ secrets.MONGO_USER }}
+      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+      MONGO_DB: ${{ secrets.MONGO_DB }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
     - name: Checkout code
@@ -27,4 +26,4 @@ jobs:
         docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
 
         docker-compose build frontend-prod && docker-compose push frontend-prod
-        # docker-compose build backend-prod && docker-compose push backend-prod
+        docker-compose build backend-prod && docker-compose push backend-prod
