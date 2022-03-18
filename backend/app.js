@@ -15,7 +15,7 @@ const PORT = process.env.PORT;
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:80');
+  res.setHeader('Access-Control-Allow-Origin', 'http://159.89.127.84');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
@@ -33,7 +33,7 @@ app.use('/api', graphqlHTTP({
 }));
 
 mongoose.connect(
-  `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@127.0.0.1:27017/${process.env.MONGO_DB}`
+  `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@mongodb-prod:27017/${process.env.MONGO_DB}`
 )
 .then(() => {
   app.listen(PORT);
