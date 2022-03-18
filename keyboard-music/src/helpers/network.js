@@ -30,7 +30,7 @@ export default function network(type, endpoint, requestFields) {
   };
 
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:8000/api", {
+    fetch("/api", {
       method: "POST",
       body: JSON.stringify(requestBody),
       headers: {
