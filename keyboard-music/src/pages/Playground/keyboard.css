@@ -38,7 +38,8 @@
   color: lightcoral;
 }
 
-.key:hover {
+.key:hover,
+.keyPressed {
   transform: scale(1.1);
   border-color: lightblue;
   box-shadow: 0 0 15px lightblue;
@@ -46,19 +47,23 @@
   cursor: pointer;
 }
 
-.size3 {
+.Tab,
+.Backslash {
   grid-column: span 3;
 }
 
-.size4 {
+.Backspace,
+.CapsLock,
+.Enter {
   grid-column: span 4;
 }
 
-.size5 {
+.ShiftLeft,
+.ShiftRight {
   grid-column: span 5;
 }
 
-.space {
+.Space {
   grid-column: 10 / 20;
 }
 

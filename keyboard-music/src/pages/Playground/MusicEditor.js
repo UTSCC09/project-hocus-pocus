@@ -1,5 +1,4 @@
 import React from "react";
-import Split from "react-split";
 import "./musicEditor.css";
 
 const MusicEditor = (props) => {

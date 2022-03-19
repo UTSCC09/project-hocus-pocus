@@ -1,55 +1,90 @@
-import React, { Component } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Split from "react-split";
+import * as Tone from "tone";
 import "./index.css";
 import Keyboard from "./Keyboard";
 import MusicEditor from "./MusicEditor";
+import keyMap from "../../static/defaultKeyBoardMapping";
 
-const instrumentPath = "../../static/music/instrument";
-const beatPath = "../../static/music/beat";
+const synth = new Tone.Synth().toDestination();
 
-class PlaygroundPage extends Component {
-  componentDidMount() {
-    document.addEventListener("keydown", (e) => {});
+const PlaygroundPage = (props) => {
+  const [SPN, setSPN] = useState(4);
+  const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
+  const [record, setRecord] = useState([]); // e.g. [{ offset: 0.15, sound: { instrument: "piano", note: "c" }, action: "start" }]
+
+  function playKeyPressedAnimation(e) {
+    const pressedKey = document.querySelector("." + e.code);
+    pressedKey.classList.add("keyPressed");
   }
-  render() {
-    return (
-      <Split
-        style={{ height: "calc(100vh - 3rem)" }}
-        sizes={[90, 10]}
-        minSize={[0, 0]}
-        expandToMin={true}
-        gutterSize={10}
-        gutterAlign="center"
-        // gutterStyle={(dimension, gutterSize, index) => {
-        //   return { zIndex: 10, height: "10px" };
-        // }}
-        direction="vertical"
-        className="playground"
-      >
-        <div className="playArea">
-          <Keyboard />
-        </div>
-        <MusicEditor />
-        {/* <div className="sound">
-          <audio data-key="65" src="./pianoNotes/g+.wav"></audio>
-          <audio data-key="87" src="./pianoNotes/a.wav"></audio>
-          <audio data-key="69" src="./pianoNotes/b.wav"></audio>
-          <audio data-key="82" src="./pianoNotes/c.wav"></audio>
-          <audio data-key="84" src="./pianoNotes/d.wav"></audio>
-          <audio data-key="89" src="./pianoNotes/e.wav"></audio>
-          <audio data-key="85" src="./pianoNotes/f.wav"></audio>
 
-          <audio data-key="68" src="./pianoNotes/bb.wav"></audio>
-          <audio data-key="70" src="./pianoNotes/c+.wav"></audio>
-          <audio data-key="72" src="./pianoNotes/eb.wav"></audio>
-          <audio data-key="74" src="./pianoNotes/f+.wav"></audio>
-          <audio data-key="73" src="./pianoNotes/g.wav"></audio>
+  const keyDoFunction = useCallback(
+    (func) => {
+      if (/^SPN\d$/.test(func)) {
+        return setSPN(parseInt(func.slice(-1)));
+      }
+      switch (func) {
+        case "delete":
+          setSimpleRecord(simpleRecord.slice(0, -1));
+          break;
+        case "newline":
+          setSimpleRecord(simpleRecord.concat(["\n"]));
+          break;
+        case "beat":
+          break;
+        default:
+          if (/^[A-G]b?$/.test(func)) {
+            synth.triggerAttackRelease(func + SPN, "8n");
+            setSimpleRecord(simpleRecord.concat([func + SPN]));
+          } else if (/^[A-G]b?\d$/.test(func)) {
+            synth.triggerAttackRelease(func, "8n");
+            setSimpleRecord(simpleRecord.concat([func]));
+          } else {
+            console.warn("unknown function");
+          }
+      }
+    },
+    [SPN, simpleRecord]
+  );
 
-          <audio data-key="66" src="./pianoNotes/beat.wav"></audio>
-        </div> */}
-      </Split>
+  useEffect(() => {
+    const keys = Array.from(document.querySelectorAll(".key"));
+    keys.forEach((key) =>
+      key.addEventListener("transitionend", (e) => {
+        if (e.propertyName !== "transform") return;
+        e.target.classList.remove("keyPressed");
+      })
     );
-  }
-}
+
+    const handleKeydown = (e) => {
+      const func = keyMap[e.code].function;
+      playKeyPressedAnimation(e);
+      keyDoFunction(func);
+    };
+    document.addEventListener("keydown", handleKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [keyDoFunction, simpleRecord]);
+
+  return (
+    <Split
+      style={{ height: "calc(100vh - 3rem)" }}
+      sizes={[90, 10]}
+      minSize={[0, 0]}
+      expandToMin={true}
+      gutterSize={10}
+      gutterAlign="center"
+      direction="vertical"
+      className="playground"
+    >
+      <div className="playArea">
+        {simpleRecord}
+        <Keyboard SPN={SPN} />
+      </div>
+      <MusicEditor />
+    </Split>
+  );
+};
 
 export default PlaygroundPage;
