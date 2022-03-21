@@ -1,0 +1,78 @@
+{
+  "Backquote": { "function": null, "symbol": "~" },
+  "Digit1": { "function": "SPN1", "symbol": "1" },
+  "Digit2": { "function": "SPN2", "symbol": "2" },
+  "Digit3": { "function": "SPN3", "symbol": "3" },
+  "Digit4": { "function": "SPN4", "symbol": "4" },
+  "Digit5": { "function": "SPN5", "symbol": "5" },
+  "Digit6": { "function": "SPN6", "symbol": "6" },
+  "Digit7": { "function": "SPN7", "symbol": "7" },
+  "Digit8": { "function": "SPN8", "symbol": "8" },
+  "Digit9": { "function": "SPN9", "symbol": "9" },
+  "Digit0": { "function": "SPN0", "symbol": "0" },
+  "Minus": { "function": null, "symbol": "-" },
+  "Equal": { "function": null, "symbol": "+" },
+  "Backspace": {
+    "function": "delete",
+    "symbol": "Delete"
+  },
+
+  "Tab": { "function": null, "symbol": "Tab" },
+  "KeyQ": { "function": null, "symbol": "Q" },
+  "KeyW": { "function": "Db", "symbol": "W" },
+  "KeyE": { "function": "Eb", "symbol": "E" },
+  "KeyR": { "function": null, "symbol": "R" },
+  "KeyT": { "function": "Gb", "symbol": "T" },
+  "KeyY": { "function": "Ab", "symbol": "Y" },
+  "KeyU": { "function": "Bb", "symbol": "U" },
+  "KeyI": { "function": null, "symbol": "I" },
+  "KeyO": { "function": null, "symbol": "O" },
+  "KeyP": { "function": null, "symbol": "P" },
+  "BracketLeft": {
+    "function": null,
+    "symbol": "["
+  },
+  "BracketRight": {
+    "function": null,
+    "symbol": "]"
+  },
+  "Backslash": { "function": null, "symbol": "\\" },
+
+  "CapsLock": {
+    "function": null,
+    "symbol": "CapsLock"
+  },
+  "KeyA": { "function": "C", "symbol": "A" },
+  "KeyS": { "function": "D", "symbol": "S" },
+  "KeyD": { "function": "E", "symbol": "D" },
+  "KeyF": { "function": "F", "symbol": "F" },
+  "KeyG": { "function": "G", "symbol": "G" },
+  "KeyH": { "function": "A", "symbol": "H" },
+  "KeyJ": { "function": "B", "symbol": "J" },
+  "KeyK": { "function": null, "symbol": "K" },
+  "KeyL": { "function": null, "symbol": "L" },
+  "Semicolon": { "function": null, "symbol": ";" },
+  "Quote": { "function": null, "symbol": "'" },
+  "Enter": { "function": "newline", "symbol": "Return" },
+
+  "ShiftLeft": {
+    "function": null,
+    "symbol": "Shift"
+  },
+  "KeyZ": { "function": null, "symbol": "Z" },
+  "KeyX": { "function": null, "symbol": "X" },
+  "KeyC": { "function": null, "symbol": "C" },
+  "KeyV": { "function": null, "symbol": "V" },
+  "KeyB": { "function": null, "symbol": "B" },
+  "KeyN": { "function": null, "symbol": "N" },
+  "KeyM": { "function": null, "symbol": "M" },
+  "Comma": { "function": null, "symbol": "," },
+  "Period": { "function": null, "symbol": "." },
+  "Slash": { "function": null, "symbol": "/" },
+  "ShiftRight": {
+    "function": null,
+    "symbol": "Shift"
+  },
+
+  "Space": { "function": "beat", "symbol": "⎵" }
+}

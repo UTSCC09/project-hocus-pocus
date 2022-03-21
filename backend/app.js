@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { graphqlHTTP } = require('express-graphql');
 const mongoose = require('mongoose');
-const https = require('https');
 
 const graphQlSchema = require('./graphql/schema/index');
 const graphQlResolvers = require('./graphql/resolvers/index');
@@ -37,12 +36,6 @@ mongoose.connect(
 )
 .then(() => {
   app.listen(PORT);
-  console.log("connected to mongodb!");
-  // TODO: https
-  // https.createServer(config, app).listen(PORT, (err) => {
-  //   if (err) console.log(err);
-  //   else console.log("HTTPS server on https://localhost:%s", PORT);
-  // });
 })
 .catch(err => {
   console.log(err);

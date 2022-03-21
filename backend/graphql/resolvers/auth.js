@@ -1,11 +1,16 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
 const User = require('../../models/user');
 
 module.exports = {
   createUser: async (args) => {
     try {
+      if (!validator.isEmail(args.userInput.email)) {
+        throw new Error('Invalid email.');
+      }
+
       const existingUser = await User.findOne({ email: args.userInput.email });
       if (existingUser) {
         throw new Error('User exists already.');

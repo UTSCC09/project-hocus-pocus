@@ -3,9 +3,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import LoginPage from "./pages/Login";
+import MePage from "./pages/Me";
+import PlaygroundPage from "./pages/Playground";
+import CommunityPage from "./pages/Community";
 import Navigation from "./components/Navigation";
 import AuthContext from "./context/auth-context";
-
 class App extends Component {
   state = {
     token: null,
@@ -33,8 +35,11 @@ class App extends Component {
         >
           <Navigation />
           <Routes>
-            <Route path="/" exact element={<LoginPage />} />
+            <Route path="/" element={<CommunityPage />} exact />
             <Route path="/auth" element={<LoginPage />} />
+            <Route path="/me" element={<MePage />} />
+            <Route path="/playground" element={<PlaygroundPage />} />
+            <Route path="/community" element={<CommunityPage />} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>
