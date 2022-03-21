@@ -5,6 +5,7 @@ import "./index.css";
 import Keyboard from "./Keyboard";
 import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
+import Peer from 'peerjs';
 
 const synth = new Tone.Synth().toDestination();
 
@@ -12,11 +13,19 @@ const PlaygroundPage = (props) => {
   const [SPN, setSPN] = useState(4);
   const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
   const [record, setRecord] = useState([]); // e.g. [{ offset: 0.15, sound: { instrument: "piano", note: "c" }, action: "start" }]
+  const [peerRef] = useState(new Peer());
+  const [connectionRef, setConnectionRef] = useState(null);
 
-  function playKeyPressedAnimation(e) {
-    const pressedKey = document.querySelector("." + e.code);
+  function playKeyPressedAnimation(code) {
+    const pressedKey = document.querySelector("." + code);
     pressedKey.classList.add("keyPressed");
   }
+
+  const transmitKeyDown = useCallback((keyCode) => {
+    if (connectionRef) {
+      connectionRef.send(keyCode);
+    }
+  }, [connectionRef]);
 
   const keyDoFunction = useCallback(
     (func) => {
@@ -47,6 +56,12 @@ const PlaygroundPage = (props) => {
     [SPN, simpleRecord]
   );
 
+  const simulateKeyPress = useCallback((keyCode) => {
+    const func = keyMap[keyCode].function;
+    playKeyPressedAnimation(keyCode);
+    keyDoFunction(func);
+  }, [keyDoFunction]);
+
   useEffect(() => {
     const keys = Array.from(document.querySelectorAll(".key"));
     keys.forEach((key) =>
@@ -57,15 +72,36 @@ const PlaygroundPage = (props) => {
     );
 
     const handleKeydown = (e) => {
-      const func = keyMap[e.code].function;
-      playKeyPressedAnimation(e);
-      keyDoFunction(func);
+      simulateKeyPress(e.code);
+      transmitKeyDown(e.code);
     };
     document.addEventListener("keydown", handleKeydown);
     return () => {
       document.removeEventListener("keydown", handleKeydown);
     };
-  }, [keyDoFunction, simpleRecord]);
+  }, [keyDoFunction, simpleRecord, simulateKeyPress, transmitKeyDown]);
+
+
+  useEffect(() => {
+    peerRef.on('open', (id) => {
+      console.log(id);
+    });
+
+    peerRef.on('connection', (conn) => {
+      console.log('passive connected');
+      conn.on('data', (data) => {
+        console.log('passive', data);
+        const func = keyMap[data].function;
+        playKeyPressedAnimation(data);
+        keyDoFunction(func);
+      });
+    });
+
+    peerRef.on('error', console.log);
+    peerRef.on('close', console.log);
+    peerRef.on('disconnected', console.log);
+
+  }, [keyDoFunction, peerRef]);
 
   return (
     <Split
@@ -82,7 +118,19 @@ const PlaygroundPage = (props) => {
         {simpleRecord}
         <Keyboard SPN={SPN} />
       </div>
-      <MusicEditor />
+      <div>
+        <input onKeyPress={(e) => {
+          if (e.code === 'Enter') {
+            const connection = peerRef.connect(e.target.value);
+            setConnectionRef(connection);
+            connection.on('data', (data) => {
+              console.log('active', data);
+              simulateKeyPress(data);
+            });
+          }
+        }} placeholder="Connect to peer" width={30} />
+        <MusicEditor />
+      </div>
     </Split>
   );
 };
