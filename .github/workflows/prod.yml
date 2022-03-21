@@ -1,15 +1,12 @@
-name: Deploy
+name: Build Images
 
 on:
   push:
     branches:
       - prod
-  pull_request:
-    branches:
-      - prod
 
 jobs:
-  deploy:
+  build-images:
     runs-on: ubuntu-latest
     env:
       MONGO_USER: ${{ secrets.MONGO_USER }}
