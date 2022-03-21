@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
+import { Navigate } from "react-router-dom";
 
 import "./index.css";
 import AuthContext from "../../context/auth-context";
@@ -11,6 +12,7 @@ class LoginPage extends Component {
     password: "",
     alertMessage: "",
     variant: "",
+    redirect: null,
   };
 
   static contextType = AuthContext;
@@ -62,6 +64,7 @@ class LoginPage extends Component {
             password: "",
             variant: "",
             alertMessage: "",
+            redirect: "/community",
           });
         }
       } else {
@@ -74,6 +77,10 @@ class LoginPage extends Component {
   };
 
   render() {
+    if (this.state.redirect) {
+      return <Navigate to={this.state.redirect} />
+    }
+
     return (
       <div className="login-page">
         <Alert variant={this.state.variant}>{this.state.alertMessage}</Alert>

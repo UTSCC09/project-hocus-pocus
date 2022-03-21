@@ -14,12 +14,24 @@ class App extends Component {
     userId: null,
   };
 
+  componentDidMount() {
+    if (window.sessionStorage.getItem("token") && window.sessionStorage.getItem("userId")) {
+      this.setState({ 
+        token: window.sessionStorage.getItem("token"),
+        userId: window.sessionStorage.getItem("userId"),
+      })
+    }
+  }
+
   login = (userId, token, tokenExpiration) => {
     this.setState({ userId, token });
+    window.sessionStorage.setItem("userId", userId);
+    window.sessionStorage.setItem("token", token);
   };
 
   logout = () => {
     this.setState({ userId: null, token: null });
+    window.sessionStorage.clear();
   };
 
   render() {
