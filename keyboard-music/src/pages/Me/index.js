@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import Peer from 'peerjs';
 
 class MePage extends Component {
-  peer = new Peer();
+  peer = new Peer({
+      host: 'localhost',
+      port: 9000,
+      path: '/myapp'
+  });
   // connection = null;
 
   state = {
