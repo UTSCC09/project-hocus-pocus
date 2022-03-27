@@ -3,7 +3,6 @@ import Peer from 'peerjs';
 
 class MePage extends Component {
   peer = new Peer({
-    secure:true,
     host: 'keyboard-music.yyin.me',
     path: '/myapp'
   });
