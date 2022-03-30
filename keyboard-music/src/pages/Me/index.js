@@ -3,9 +3,9 @@ import Peer from 'peerjs';
 
 class MePage extends Component {
   peer = new Peer({
-      host: 'localhost',
-      port: 9000,
-      path: '/myapp'
+      host: 'keyboard-music.yyin.me',
+      path: '/myapp',
+      secure: true
   });
   // connection = null;
 
