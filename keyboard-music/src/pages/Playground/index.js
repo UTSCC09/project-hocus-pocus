@@ -15,7 +15,7 @@ const PlaygroundPage = (props) => {
   const [SPN, setSPN] = useState(4);
   const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
   const [isRecording, setIsRecording] = useState(false); // for record only, NOT for simpleRecord
-  const [record, setRecord] = useState([]); // e.g. [{ offset: 00:02:15, sound: { instrument: "piano", note: "c" }, action: "start" }]
+  const [record, setRecord] = useState([]); // e.g. [{ offset: 00:02.5, sound: { instrument: "piano", note: "C4" }, action: "start" }]
   const [peerRef] = useState(new Peer());
   const [connectionRef, setConnectionRef] = useState(null);
 
@@ -30,9 +30,7 @@ const PlaygroundPage = (props) => {
   };
   const getTime = useCallback(() => {
     const { minutes, seconds, secondTenths } = timer.getTimeValues();
-    return `${toTwoDigits(minutes)}:${toTwoDigits(seconds)}:${toTwoDigits(
-      secondTenths
-    )}`;
+    return `${toTwoDigits(minutes)}:${toTwoDigits(seconds)}.${secondTenths}`;
   }, [timer]);
 
   const startTimer = () => {
@@ -53,6 +51,19 @@ const PlaygroundPage = (props) => {
   };
 
   // KEYBOARD FOR PLAYING MUSIC
+  const checkAndStandardizeMusicKeyFunctionName = useCallback(
+    (func) => {
+      if (/^[A-G]b?$/.test(func)) {
+        return func + SPN;
+      } else if (/^[A-G]b?\d$/.test(func)) {
+        return func;
+      } else {
+        return null;
+      }
+    },
+    [SPN]
+  );
+
   function playKeyPressedAnimation(code) {
     const pressedKey = document.querySelector("." + code);
     pressedKey.classList.add("keyPressed");
@@ -89,31 +100,29 @@ const PlaygroundPage = (props) => {
           break;
         default:
           const now = Tone.now();
-          if (/^[A-G]b?$/.test(func)) {
-            synth.triggerAttack(func + SPN, now);
-            setSimpleRecord(simpleRecord.concat([func + SPN]));
-          } else if (/^[A-G]b?\d$/.test(func)) {
-            synth.triggerAttack(func, now);
-            synth.triggerRelease(func + SPN, now + 1);
-            setSimpleRecord(simpleRecord.concat([func]));
+          const standardizedFunc =
+            checkAndStandardizeMusicKeyFunctionName(func);
+          console.log(standardizedFunc);
+          if (standardizedFunc) {
+            synth.triggerAttack(standardizedFunc, now);
+            setSimpleRecord(simpleRecord.concat([standardizedFunc]));
           } else {
             console.warn("unknown function");
           }
       }
     },
-    [SPN, simpleRecord]
+    [checkAndStandardizeMusicKeyFunctionName, simpleRecord]
   );
 
   const keyUpFunction = useCallback(
     (func) => {
       const now = Tone.now();
-      if (/^[A-G]b?$/.test(func)) {
-        synth.triggerRelease(func + SPN, now);
-      } else if (/^[A-G]b?\d$/.test(func)) {
-        synth.triggerRelease(func, now);
+      const standardizedFunc = checkAndStandardizeMusicKeyFunctionName(func);
+      if (standardizedFunc) {
+        synth.triggerRelease(standardizedFunc, now);
       }
     },
-    [SPN]
+    [checkAndStandardizeMusicKeyFunctionName]
   );
 
   const simulateKeyPress = useCallback(
@@ -140,7 +149,12 @@ const PlaygroundPage = (props) => {
       if (isRecording) {
         const newRecord = {
           offset: getTime(),
-          sound: { instrument: "piano", note: keyMap[e.code] },
+          sound: {
+            instrument: "piano",
+            note: checkAndStandardizeMusicKeyFunctionName(
+              keyMap[e.code].function
+            ),
+          },
           action: "start",
         };
         setRecord(record.concat([newRecord]));
@@ -154,7 +168,12 @@ const PlaygroundPage = (props) => {
       if (isRecording) {
         const newRecord = {
           offset: getTime(),
-          sound: { instrument: "piano", note: keyMap[e.code] },
+          sound: {
+            instrument: "piano",
+            note: checkAndStandardizeMusicKeyFunctionName(
+              keyMap[e.code].function
+            ),
+          },
           action: "end",
         };
         setRecord(record.concat([newRecord]));
@@ -167,6 +186,7 @@ const PlaygroundPage = (props) => {
       document.removeEventListener("keyup", handleKeyup);
     };
   }, [
+    checkAndStandardizeMusicKeyFunctionName,
     getTime,
     isRecording,
     keyDownFunction,
@@ -234,7 +254,7 @@ const PlaygroundPage = (props) => {
           placeholder="Connect to peer"
           width={30}
         />
-        <MusicEditor />
+        <MusicEditor record={record} />
       </div>
     </Split>
   );
