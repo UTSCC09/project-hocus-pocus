@@ -28,7 +28,8 @@ class LoginPage extends Component {
       "mutation",
       `createUser(userInput: { email: "${this.state.email}", password: "${this.state.password}" })`,
       `_id
-      email`
+      email`,
+      null
     ).then((res) => {
       this.setState({
         email: res.data ? "" : this.state.email,
@@ -53,7 +54,8 @@ class LoginPage extends Component {
       `login(email: "${this.state.email}", password: "${this.state.password}")`,
       `userId
       token
-      tokenExpiration`
+      tokenExpiration`,
+      null
     ).then((res) => {
       if (res.data) {
         let data = res.data.login;

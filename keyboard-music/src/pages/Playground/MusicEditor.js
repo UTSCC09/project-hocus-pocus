@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import "./musicEditor.css";
 import * as Tone from "tone";
 import { Button } from "react-bootstrap";
+import network from "../../helpers/network";
+import AuthContext from "../../context/auth-context";
 
 const synth = new Tone.PolySynth().toDestination();
 
 const MusicEditor = (props) => {
   const [mode, setMode] = useState("Composing Mode");
+  const context = React.useContext(AuthContext);
 
   // offset: str "mm:ss.t"
   const translateOffsetTime = (offset) =>
@@ -17,8 +20,25 @@ const MusicEditor = (props) => {
   };
 
   const save = () => {
-    console.log(props.record);
-    // TODO
+    network(
+      "mutation",
+      `createRecord(record: ${JSON.stringify(props.record)})`
+        .replace(/"offset"/g, "offset")
+        .replace(/"sound"/g, "sound")
+        .replace(/"instrument"/g, "instrument")
+        .replace(/"note"/g, "note")
+        .replace(/"action"/g, "action"),
+      `_id
+      author
+      published`,
+      context.token
+    ).then((res) => {
+      if (res.data) {
+        console.log(res.data);
+      } else {
+        // TODO: handle error
+      }
+    })
   };
   const replay = () => {
     const startTime = Tone.now();

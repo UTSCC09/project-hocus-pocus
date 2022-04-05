@@ -7,10 +7,6 @@ const recordSchema = new Schema({
     type: String,
     required: true
   },
-  simpleRecord: {
-    type: Array,
-    required: true
-  },
   record: {
     type: Array,
     required: true

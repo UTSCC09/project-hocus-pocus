@@ -16,7 +16,13 @@ const PlaygroundPage = (props) => {
   const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
   const [isRecording, setIsRecording] = useState(false); // for record only, NOT for simpleRecord
   const [record, setRecord] = useState([]); // e.g. [{ offset: 00:02.5, sound: { instrument: "piano", note: "C4" }, action: "start" }]
-  const [peerRef] = useState(new Peer());
+  const [peerRef] = useState(
+    new Peer({
+      host: "keyboard-music.yyin.me",
+      path: "/myapp",
+      secure: true,
+    })
+  );
   const [connectionRef, setConnectionRef] = useState(null);
 
   // TIMER FOR RECORDING

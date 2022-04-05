@@ -29,34 +29,27 @@ module.exports = {
       }
 
       const regex = /^[A-G][b]?[0-9]$/;
-      const simpleRecord = args.recordInput.simpleRecord;
-      const record = args.recordInput.record;
+      const record = args.record;
 
-      let result = simpleRecord.map((key) => regex.test(key));
-      if (result.includes(false)) {
-        throw new Error("The format of simple record is invalid!");
-      }
-
-      result = record.map((note) => regex.test(note.sound.note));
+      let result = record.map((note) => regex.test(note.sound.note));
       if (result.includes(false)) {
         throw new Error("The note of record is invalid!");
       }
 
-      result = record.map((note) => ["start", "stop"].indexOf(note.action) !== -1);
+      result = record.map((note) => ["start", "end"].indexOf(note.action) !== -1);
       if (result.includes(false)) {
-        throw new Error("Action must be either 'start' or 'stop'");
+        throw new Error("Action must be either 'start' or 'end'");
       }
 
       const musicScore = new Record({
         author: req.email,
-        simpleRecord,
         record,
         published: false
       });
 
       // write to database
       const writeResult = await musicScore.save();
-      return { ...writeResult.doc, _id: writeResult.id };
+      return { ...writeResult._doc, _id: writeResult.id };
 
     } catch (err) {
       throw err;
