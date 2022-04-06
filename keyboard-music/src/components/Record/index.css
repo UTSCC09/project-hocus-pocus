@@ -1,0 +1,49 @@
+.record-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.track {
+  position: absolute;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.single-sound {
+  position: absolute;
+  top: 0;
+  height: 30px;
+  border-radius: 15px;
+  border-width: 3px;
+  border-style: solid;
+  cursor: pointer;
+}
+
+.sound-text {
+  position: absolute;
+  left: -10px;
+  width: max(100px, 100%);
+  text-align: center;
+  z-index: 2;
+  height: 100%;
+  opacity: 0;
+  color: white;
+}
+
+.sound-text:hover {
+  opacity: 1;
+}
+
+.vertical-line {
+  width: 1px;
+  height: 100%;
+  position: absolute;
+  background-color: white;
+  z-index: -1;
+}
+
+.vertical-line span {
+  position: absolute;
+  bottom: 0;
+}

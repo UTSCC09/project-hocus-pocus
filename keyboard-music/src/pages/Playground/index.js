@@ -23,8 +23,8 @@ const PlaygroundPage = (props) => {
       secure: true,
     })
   );
-  const [connectionRef, setConnectionRef] = useState(null);
 
+  const [connectionRef, setConnectionRef] = useState(null);
 
   const startTimer = () => {
     setStartTime(Date.now());
@@ -221,7 +221,7 @@ const PlaygroundPage = (props) => {
         <Keyboard SPN={SPN} />
       </div>
       <div>
-        <input
+        {/* <input
           onKeyPress={(e) => {
             if (e.code === "Enter") {
               const connection = peerRef.connect(e.target.value);
@@ -234,8 +234,8 @@ const PlaygroundPage = (props) => {
           }}
           placeholder="Connect to peer"
           width={30}
-        />
-        <MusicEditor record={record} />
+        /> */}
+        <MusicEditor record={record} isRecording={isRecording} />
       </div>
     </Split>
   );
