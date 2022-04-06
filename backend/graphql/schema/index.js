@@ -58,6 +58,7 @@ type RootMutation {
   createRecord(record: [inputNote!]!): Record!
   publishRecord(recordId: ID!): Boolean!
   unpublishRecord(recordId: ID!): Boolean!
+  deleteRecord(recordId: ID!): Boolean!
 }
 
 schema {

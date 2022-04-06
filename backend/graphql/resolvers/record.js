@@ -72,6 +72,27 @@ module.exports = {
     }
   },
 
+  deleteRecord: async (args, req) => {
+    try {
+      if (!req.isAuth) {
+        throw new Error("Unauthenticated!");
+      }
+
+      const recordId = args.recordId;
+      const record = await Record.findById(recordId);
+      if (!record) {
+        throw new Error(`Record with ID ${recordId} does not exist!`);
+      } else if (record.author !== req.email) {
+        throw new Error("Only author can delete it!");
+      }
+
+      const result = await Record.deleteOne({ _id: recordId });
+      return result.deletedCount;
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getRecordsByAuthor: async (args, req) => {
     try {
       if (!req.isAuth) {
