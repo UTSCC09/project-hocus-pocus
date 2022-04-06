@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Split from "react-split";
-import useTimer from "easytimer-react-hook";
 import * as Tone from "tone";
 import "./index.css";
 import Keyboard from "./Keyboard";
@@ -14,6 +13,7 @@ const synth = new Tone.PolySynth().toDestination();
 const PlaygroundPage = (props) => {
   const [SPN, setSPN] = useState(4);
   const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
+  const [startTime, setStartTime] = useState(null);
   const [isRecording, setIsRecording] = useState(false); // for record only, NOT for simpleRecord
   const [record, setRecord] = useState([]); // e.g. [{ offset: 00:02.5, sound: { instrument: "piano", note: "C4" }, action: "start" }]
   const [peerRef] = useState(
@@ -25,33 +25,19 @@ const PlaygroundPage = (props) => {
   );
   const [connectionRef, setConnectionRef] = useState(null);
 
-  // TIMER FOR RECORDING
-  const [timer] = useTimer({
-    precision: "secondTenths",
-    target: { hours: 1 },
-  });
-
-  const toTwoDigits = (num) => {
-    return (num < 10 ? "0" : "") + num;
-  };
-  const getTime = useCallback(() => {
-    const { minutes, seconds, secondTenths } = timer.getTimeValues();
-    return `${toTwoDigits(minutes)}:${toTwoDigits(seconds)}.${secondTenths}`;
-  }, [timer]);
 
   const startTimer = () => {
-    timer.start();
+    setStartTime(Date.now());
     setIsRecording(true);
   };
 
   const pauseTimer = () => {
-    timer.pause();
+    setStartTime(null);
     setIsRecording(false);
   };
 
   const resetTimer = () => {
-    timer.reset();
-    timer.pause();
+    setStartTime(null);
     setIsRecording(false);
     setRecord([]);
   };
@@ -154,7 +140,7 @@ const PlaygroundPage = (props) => {
       }
       if (isRecording) {
         const newRecord = {
-          offset: getTime(),
+          offset: Date.now() - startTime,
           sound: {
             instrument: "piano",
             note: checkAndStandardizeMusicKeyFunctionName(
@@ -173,7 +159,7 @@ const PlaygroundPage = (props) => {
     const handleKeyup = (e) => {
       if (isRecording) {
         const newRecord = {
-          offset: getTime(),
+          offset: Date.now() - startTime,
           sound: {
             instrument: "piano",
             note: checkAndStandardizeMusicKeyFunctionName(
@@ -191,18 +177,7 @@ const PlaygroundPage = (props) => {
       document.removeEventListener("keydown", handleKeydown);
       document.removeEventListener("keyup", handleKeyup);
     };
-  }, [
-    checkAndStandardizeMusicKeyFunctionName,
-    getTime,
-    isRecording,
-    keyDownFunction,
-    record,
-    simpleRecord,
-    simulateKeyPress,
-    simulateKeyUp,
-    timer,
-    transmitKeyDown,
-  ]);
+  }, [checkAndStandardizeMusicKeyFunctionName, isRecording, keyDownFunction, record, simpleRecord, simulateKeyPress, simulateKeyUp, startTime, transmitKeyDown]);
 
   useEffect(() => {
     peerRef.on("open", (id) => {
@@ -238,7 +213,7 @@ const PlaygroundPage = (props) => {
       <div className="playArea">
         <div>{simpleRecord}</div>
         <Timer
-          time={getTime()}
+          time={isRecording ? startTime : null}
           start={startTimer}
           pause={pauseTimer}
           reset={resetTimer}
