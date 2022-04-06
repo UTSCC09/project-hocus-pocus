@@ -58,7 +58,7 @@ module.exports = {
 
   publishRecord: async (args, req) => {
     try {
-      return publishOrUnpublish(true, args, req);
+      return {success: publishOrUnpublish(true, args, req)};
     } catch (err) {
       throw err;
     }
@@ -66,7 +66,7 @@ module.exports = {
 
   unpublishRecord: async (args, req) => {
     try {
-      return publishOrUnpublish(false, args, req);
+      return {success: publishOrUnpublish(false, args, req)};
     } catch (err) {
       throw err;
     }
@@ -87,7 +87,7 @@ module.exports = {
       }
 
       const result = await Record.deleteOne({ _id: recordId });
-      return result.deletedCount;
+      return {success: (result.deletedCount === 1 ? true : false)};
     } catch (err) {
       throw err;
     }

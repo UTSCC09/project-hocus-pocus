@@ -26,8 +26,8 @@ const Navigation = (props) => {
             <Nav.Link href="/playground" eventKey="playground" active={currentURL === '/playground'}>
               Playground
             </Nav.Link>
-            <Nav.Link href="/test" eventKey="test" active={currentURL === '/test'}>
-              Test
+            <Nav.Link href="/my_records" eventKey="my_records" active={currentURL === '/my_records'}>
+              My Records
             </Nav.Link>
           </Nav>
           <Nav>

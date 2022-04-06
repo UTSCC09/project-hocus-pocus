@@ -6,8 +6,10 @@ import LoginPage from "./pages/Login";
 import MePage from "./pages/Me";
 import PlaygroundPage from "./pages/Playground";
 import CommunityPage from "./pages/Community";
+import MyRecordsPage from "./pages/MyRecords";
 import Navigation from "./components/Navigation";
 import AuthContext from "./context/auth-context";
+
 class App extends Component {
   state = {
     token: null,
@@ -52,6 +54,7 @@ class App extends Component {
             <Route path="/me" element={<MePage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/community" element={<CommunityPage />} />
+            <Route path="/my_records" element={<MyRecordsPage />} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

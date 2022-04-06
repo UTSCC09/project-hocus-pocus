@@ -31,6 +31,10 @@ type Record {
   published: Boolean!
 }
 
+type Status {
+  success: Boolean!
+}
+
 input UserInput {
   email: String!
   password: String!
@@ -56,9 +60,9 @@ type RootQuery {
 type RootMutation {
   createUser(userInput: UserInput): User!
   createRecord(record: [inputNote!]!): Record!
-  publishRecord(recordId: ID!): Boolean!
-  unpublishRecord(recordId: ID!): Boolean!
-  deleteRecord(recordId: ID!): Boolean!
+  publishRecord(recordId: ID!): Status!
+  unpublishRecord(recordId: ID!): Status!
+  deleteRecord(recordId: ID!): Status!
 }
 
 schema {
