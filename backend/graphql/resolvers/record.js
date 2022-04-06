@@ -38,6 +38,7 @@ module.exports = {
 
       result = record.map((note) => ["start", "end"].indexOf(note.action) !== -1);
       if (result.includes(false)) {
+        // if (record.any(record => !["start", "end"].includes(record.action))) { // TODO: Consider use this instead & test this
         throw new Error("Action must be either 'start' or 'end'");
       }
 
@@ -58,7 +59,7 @@ module.exports = {
 
   publishRecord: async (args, req) => {
     try {
-      return {success: publishOrUnpublish(true, args, req)};
+      return { success: publishOrUnpublish(true, args, req) };
     } catch (err) {
       throw err;
     }
@@ -66,7 +67,7 @@ module.exports = {
 
   unpublishRecord: async (args, req) => {
     try {
-      return {success: publishOrUnpublish(false, args, req)};
+      return { success: publishOrUnpublish(false, args, req) };
     } catch (err) {
       throw err;
     }
@@ -87,7 +88,7 @@ module.exports = {
       }
 
       const result = await Record.deleteOne({ _id: recordId });
-      return {success: (result.deletedCount === 1 ? true : false)};
+      return { success: (result.deletedCount === 1 ? true : false) };
     } catch (err) {
       throw err;
     }
