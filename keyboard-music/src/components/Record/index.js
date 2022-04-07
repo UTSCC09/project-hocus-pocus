@@ -1,11 +1,22 @@
+import React from 'react';
 import './index.css';
 
 const trackHeight = 30;
 
-export default function Record({ record, showGrid = true, scrollToCurrentTime, onClick }) {
+export default function Record({ record, showGrid = true, scrollToCurrentTime, onClick, currentTime }) {
   const tracks = convertRecordToTracks(record);
+  const scrollView = React.useRef(null);
+
+  if (scrollView.current) {
+    scrollView.current.scroll({ left: findMaxTime(record) + 100, behavior: 'smooth' });
+  }
+
+  const maxLength = findMaxTime(record);
+
   return (
-    <div className="record-container" style={{ height: (tracks.length + 2) * trackHeight }}>
+    <div className="record-container" ref={(ref) => scrollView.current = ref} style={{ height: (tracks.length + 2) * trackHeight }}>
+      <div>{currentTime}</div>
+      <div style={{ width: maxLength + 400 }}></div>
       {
         tracks.map((track, i) => (
           <div key={i} className="track" style={{ top: i * (trackHeight + 10), height: trackHeight }}>
@@ -24,8 +35,10 @@ export default function Record({ record, showGrid = true, scrollToCurrentTime, o
 
       {
         showGrid && (
-          range(0, findMaxTime(record) + 100, 100).map((time) => (
-            <div className="vertical-line" style={{ left: time }}><span>{time % 500 === 0 ? String(time / 1000) + 's' : ''}</span></div>
+          range(0, maxLength + 100, 100).map((time) => (
+            <div key={time} className="vertical-line" style={{ left: time }}>
+              <span>{time % 500 === 0 ? String(time / 1000) + 's' : ''}</span>
+            </div>
           ))
         )
       }
@@ -63,7 +76,7 @@ function range(start, end, interval) {
 }
 
 function findMaxTime(records) {
-  return Math.max(...records.map((r) => r.offset + (r.duration ?? 0)));
+  return Math.max(0, ...records.map((r) => r.offset + (r.duration ?? 0)));
 }
 
 function convertRecordToTracks(records = []) {
