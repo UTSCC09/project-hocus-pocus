@@ -26,9 +26,11 @@ type Note {
 
 type Record {
   _id: ID!
+  title: String!
   author: String!
   record: [Note!]!
   published: Boolean!
+  date: String!
 }
 
 type Status {
