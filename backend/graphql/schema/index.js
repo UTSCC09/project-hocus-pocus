@@ -19,7 +19,7 @@ type Sound {
 }
 
 type Note {
-  offset: String!
+  offset: Int!
   sound: Sound!
   action: String!
 }
@@ -46,7 +46,7 @@ input inputSound {
 }
 
 input inputNote {
-  offset: String!
+  offset: Int!
   sound: inputSound!
   action: String!
 }
@@ -59,7 +59,7 @@ type RootQuery {
 
 type RootMutation {
   createUser(userInput: UserInput): User!
-  createRecord(record: [inputNote!]!): Record!
+  createRecord(record: [inputNote!]!, title: String!): Record!
   publishRecord(recordId: ID!): Status!
   unpublishRecord(recordId: ID!): Status!
   deleteRecord(recordId: ID!): Status!

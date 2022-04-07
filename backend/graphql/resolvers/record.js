@@ -29,7 +29,7 @@ module.exports = {
       }
 
       const regex = /^[A-G][b]?[0-9]$/;
-      const record = args.record;
+      const { record, title } = args;
 
       let result = record.map((note) => regex.test(note.sound.note));
       if (result.includes(false)) {
@@ -43,9 +43,11 @@ module.exports = {
       }
 
       const musicScore = new Record({
+        title,
         author: req.email,
         record,
-        published: false
+        published: false,
+        date: Date.now()
       });
 
       // write to database

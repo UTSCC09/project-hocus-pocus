@@ -19,9 +19,13 @@ const MusicEditor = (props) => {
   };
 
   const save = () => {
+    if (!props.title) {
+      alert('The title is required!');
+      return;
+    }
     network(
       "mutation",
-      `createRecord(record: ${JSON.stringify(props.record)})`
+      `createRecord(record: ${JSON.stringify(props.record)}, title: "${props.title}")`
         .replace(/"offset"/g, "offset")
         .replace(/"sound"/g, "sound")
         .replace(/"instrument"/g, "instrument")

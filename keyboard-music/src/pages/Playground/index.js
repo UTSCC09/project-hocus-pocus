@@ -7,6 +7,7 @@ import Timer from "./Timer";
 import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
 import Peer from "peerjs";
+import { Form } from "react-bootstrap";
 
 const synth = new Tone.PolySynth().toDestination();
 
@@ -16,6 +17,7 @@ const PlaygroundPage = (props) => {
   const [startTime, setStartTime] = useState(null);
   const [isRecording, setIsRecording] = useState(false); // for record only, NOT for simpleRecord
   const [record, setRecord] = useState([]); // e.g. [{ offset: 00:02.5, sound: { instrument: "piano", note: "C4" }, action: "start" }]
+  const [title, setTitle] = useState("");
   const [peerRef] = useState(
     new Peer({
       host: "keyboard-music.yyin.me",
@@ -235,7 +237,13 @@ const PlaygroundPage = (props) => {
           placeholder="Connect to peer"
           width={30}
         /> */}
-        <MusicEditor record={record} isRecording={isRecording} />
+        <Form.Control
+          type="text"
+          placeholder="Please enter the title for your record"
+          onChange={(e) => setTitle(e.target.value)} 
+          value={title}
+        />
+        <MusicEditor record={record} isRecording={isRecording} title={title} />
       </div>
     </Split>
   );
