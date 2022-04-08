@@ -10,6 +10,7 @@
   height: 15rem;
   color: black;
   margin: 20px 10px;
+  box-shadow: 5px 5px 5px black;
 }
 
 .button-group {
