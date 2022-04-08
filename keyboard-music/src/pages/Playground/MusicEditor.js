@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./musicEditor.css";
 import * as Tone from "tone";
-import { Button } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown, DropdownButton, FormControl, InputGroup } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
@@ -14,13 +14,17 @@ export default class MusicEditor extends React.Component {
     isRecording: false,
     currentTime: 0,
     currentRecord: [],
+    selectedSound: null,
   }
+
+  triggered = new Set();
 
   reset = () => {
     this.setState({
       isRecording: false,
       currentTime: 0,
       currentRecord: [],
+      selectedSound: null,
     });
   }
 
@@ -59,8 +63,43 @@ export default class MusicEditor extends React.Component {
   }
 
   play = () => {
-    const { currentRecord } = this.state;
+    this.prevTime = Date.now();
 
+    this.clock = setInterval(() => {
+      const currentTimestamp = Date.now();
+      const actualTimeElapsed = currentTimestamp - this.prevTime;
+      this.state.currentRecord.forEach(record => {
+        if (this.state.currentTime <= record.offset && record.offset < this.state.currentTime + actualTimeElapsed) {
+          if (record.action === 'start') {
+            this.triggered.add(record.sound.note);
+            synth.triggerAttack(record.sound.note);
+          } else if (record.action === 'end') {
+            this.triggered.delete(record.sound.note);
+            synth.triggerRelease(record.sound.note);
+          }
+        }
+      })
+      this.prevTime = currentTimestamp;
+      this.setState({ currentTime: this.state.currentTime + actualTimeElapsed });
+    }, UPDATE_INTERVAL_MS);
+  }
+
+  pause = () => {
+    synth.triggerRelease(Array.from(this.triggered));
+    this.triggered.clear();
+    clearInterval(this.clock);
+  }
+
+  get selectedSoundDetails() {
+    if (this.state.selectedSound === null) return null;
+    const { sound, start } = this.state.selectedSound;
+    const soundDetails = this.state.currentRecord.find(note =>
+      JSON.stringify(note.sound) === JSON.stringify(sound) &&
+      note.offset === start &&
+      note.action === 'start'
+    );
+    if (!soundDetails) return null;
+    return soundDetails;
   }
 
   render() {
@@ -70,6 +109,7 @@ export default class MusicEditor extends React.Component {
           <Button onClick={this.startRecording}>Start Recording</Button>
           <Button onClick={this.stopRecording}>Stop Recording</Button>
           <Button onClick={this.reset}>Reset</Button>
+          <Button onClick={this.pause}>Pause</Button>
           <Button onClick={this.play}>Play</Button>
           <span>{formatTime(this.state.currentTime)}</span>
         </div>
@@ -79,7 +119,32 @@ export default class MusicEditor extends React.Component {
             currentTime={this.state.currentTime}
             scrollToCurrentTime={this.state.isRecording}
             onClickOnTime={(currentTime) => this.setState({ currentTime })}
+            selectedSound={this.state.selectedSound}
+            onSelectSound={(sound) => this.setState({ selectedSound: sound })}
           />
+        </div>
+        <div>
+          {
+            // TODO: Remove this
+            null && (
+              <InputGroup>
+                <InputGroup.Text>Note</InputGroup.Text>
+                <DropdownButton title={'Note: ' + this.selectedSoundDetails.sound.note}>
+                  <Dropdown.Item href="#">Action</Dropdown.Item>
+                  <Dropdown.Item href="#">Another action</Dropdown.Item>
+                  <Dropdown.Item href="#">Something else here</Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item href="#">Separated link</Dropdown.Item>
+                </DropdownButton>
+                <InputGroup.Text>Start Time</InputGroup.Text>
+                <FormControl aria-label="Start" value={this.selectedSoundDetails.start} />
+                <InputGroup.Text>Duration</InputGroup.Text>
+                <FormControl aria-label="Duration" />
+                <Button variant="primary">Save</Button>
+                <Button variant="warning">Delete</Button>
+              </InputGroup>
+            )
+          }
         </div>
       </div>
     );

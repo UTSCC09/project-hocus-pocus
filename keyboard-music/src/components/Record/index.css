@@ -33,7 +33,8 @@
   color: white;
 }
 
-.sound-text:hover {
+.sound-text:hover,
+.single-sound.selected .sound-text {
   opacity: 1;
 }
 

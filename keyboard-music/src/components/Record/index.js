@@ -4,7 +4,15 @@ import './index.css';
 const TRACK_HEIGHT = 30;
 const ZOOM_FACTOR = 0.5;
 
-export default function Record({ record, showGrid = true, scrollToCurrentTime, onClickOnTime, currentTime }) {
+export default function Record({
+  record,
+  showGrid = true,
+  scrollToCurrentTime,
+  onClickOnTime,
+  currentTime,
+  onSelectSound,
+  selectedSound,
+}) {
 
   const tracks = convertRecordToTracks(record, currentTime);
   const maxLength = findMaxTime(record, currentTime);
@@ -39,21 +47,32 @@ export default function Record({ record, showGrid = true, scrollToCurrentTime, o
         tracks.map((track, i) => (
           <div key={i} className="track" style={{ top: i * (TRACK_HEIGHT + 10), height: TRACK_HEIGHT }}>
             {
-              track.map(({ start, duration, sound }, index) => (
-                <div
-                  key={index}
-                  className="single-sound"
-                  style={{ left: (start * ZOOM_FACTOR), width: (duration * ZOOM_FACTOR), ...getColorStylesForSound(sound) }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                >
-                  <div className="sound-text">
-                    {sound.note} {sound.instrument}
+              track.map(({ start, duration, sound }, index) => {
+                const isSelected = JSON.stringify({ start, sound }) === JSON.stringify(selectedSound);
+                return (
+                  <div
+                    key={index}
+                    className={`single-sound ${isSelected ? "selected" : ""}`}
+                    style={{
+                      left: (start * ZOOM_FACTOR),
+                      width: (duration * ZOOM_FACTOR),
+                      ...getColorStylesForSound(sound, isSelected),
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      if (isSelected)
+                        onSelectSound(null);
+                      else
+                        onSelectSound({ start, sound });
+                    }}
+                  >
+                    <div className="sound-text">
+                      {sound.note} {sound.instrument}
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             }
           </div>
         ))
@@ -82,7 +101,7 @@ export default function Record({ record, showGrid = true, scrollToCurrentTime, o
   )
 }
 
-function getColorStylesForSound(sound) {
+function getColorStylesForSound(sound, isSelected) {
   let noteId = 0;
   for (const char of sound.note.split('')) {
     noteId += char.charCodeAt(0);
@@ -98,7 +117,10 @@ function getColorStylesForSound(sound) {
   const h = soundId % 360;
   const s = 50;
   const l = 50;
-  return { backgroundColor: `hsl(${h}, ${s}%, ${l}%)`, borderColor: `hsl(${h}, ${s}%, ${l - 20}%, 0.5)` };
+  return {
+    backgroundColor: `hsl(${h}, ${s}%, ${l}%)`,
+    borderColor: `hsl(${h}, ${s}%, ${l - 20}%, ${isSelected ? 1 : 0.5})`,
+  };
 }
 
 
