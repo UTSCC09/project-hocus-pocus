@@ -1,63 +1,51 @@
 # project-hocus-pocus
 
+## Project URL
+**Task:** Provide the link to your deployed application. Please make sure the link works.
+
 https://keyboard-music.yyin.me
 
-### Team registration and project proposal
+## Project Video URL
 
-**Project Title:**
+**Task:** Provide the link to your youtube video. Please make sure the link works.
 
-Keyboard Music
+## Project Description
 
-**Team Member:**
+**Task:** Provide a detailed description of your app
 
-Min Qi Zhang, Yifei Yin, Yiyang Zhou
+## Development
 
-**A description of the web application:**
+**Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used.
 
-The app allows users to compose and perform music using keyboards with customizable options. The app also includes a community section where users can share their creations with others.
+Frontend:
+- React with JavaScript
+- `react-bootstrap`
+- `react-router`
+- `tone`
 
-More specifically, the app is composed of three systems: 
+Backend:
+-
 
-* The composing system: interface that allows users to create, view, edit, and record music. 
+## Deployment
 
-* The user account system: users can create an account to save and sync their work across devices.
+**Task:** Explain how you have deployed your application.
 
-* The community system: users can share their work with other users; user can interact with others’ posts.
+## Maintenance
 
-**A description of the key features that will be completed by the Beta version:**
+**Task:** Explain how you monitor your deployed app to make sure that everything is working as expected.
 
-Composing system: use keyboards to play different instruments, record the performances, generate scores and modify existing scores.
+## Challenges
 
-Account system: basic operations (sign up, log in, log out, save/load music).
+**Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items.
 
-Community system: sharing posts and posting comments.
+1.
+2.
+3.
 
-**A description of the additional features that will be complete by the Final version:**
+## Contributions
 
-Livestream: users can livestream their performance and users can watch others’ steam.
+**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number).
 
-Livestream: users can post text in real-time chats.
+# One more thing?
 
-Composing system: users can customize how keyboards are mapped to music notes or sound effects. Different layouts can be stored and synced across devices.
-
-**A description of the technology stack that you will use to build and deploy it:**
-
-Front End: React
-
-Back End: Express
-
-Data Exchange: GraphQLDatabase: MongoDB
-
-Deployment: Docker, GitHub CI, DigitalOcean/AWS
-
-**A description of the top 5 technical challenges:**
-
-* Generate and mix music effects in real time
-
-* Record keyboard presses accurately
-
-* Create an user friendly score editor
-
-* Stream performance in real time with minimal latency
-
-* Set up automatic cloud deployment for the app
+**Task:** Any additional comment you want to share with the course staff?
