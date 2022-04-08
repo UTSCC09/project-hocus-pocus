@@ -84,7 +84,7 @@ type RootMutation {
   upvoteRecord(recordId: ID!): Status!
   undoUpvoteRecord(recordId: ID!): Status!
   startLiveStream(code: String!): LiveStream!
-  endLiveStream(code: String!): Status!
+  endLiveStream: Status!
 }
 
 schema {
