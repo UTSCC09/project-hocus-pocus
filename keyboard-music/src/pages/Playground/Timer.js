@@ -10,13 +10,18 @@ const Timer = (props) => {
       return;
     }
 
-    const interval = setInterval(() => setRelativeTime(Date.now() - props.time), 100);
+    const interval = setInterval(() => {
+      setRelativeTime(Date.now() - props.time);
+      if (props.onUpdate) {
+        props.onUpdate(Date.now() - props.time);
+      }
+    }, 100);
 
     return () => {
       setRelativeTime(0);
       clearInterval(interval);
     };
-  }, [props.time]);
+  }, [props.time, props.onUpdate, props]);
 
   return (
     <div className="Timer">
