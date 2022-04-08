@@ -58,7 +58,7 @@ export default class PlaygroundPage extends React.Component {
       // FUNCTIONS OTHER THAN MUSIC NOTES
       if (/^SPN\d$/.test(assignedKeyFunction)) {
         this.setState({ SPN: parseInt(assignedKeyFunction.slice(-1)) });
-        // TODO(Yifei): releaseAll
+        this.musicEditor.onReleaseAll();
         return;
       }
 

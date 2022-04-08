@@ -11,7 +11,7 @@ export default function Record({
   onClickOnTime,
   currentTime,
   onSelectSound,
-  selectedSound,
+  selectedSoundIndex,
 }) {
 
   const tracks = convertRecordToTracks(record, currentTime);
@@ -46,8 +46,8 @@ export default function Record({
         tracks.map((track, i) => (
           <div key={i} className="track" style={{ top: i * (TRACK_HEIGHT + 10), height: TRACK_HEIGHT }}>
             {
-              track.map(({ start, duration, sound }, index) => {
-                const isSelected = JSON.stringify({ start, sound }) === JSON.stringify(selectedSound);
+              track.map(({ start, duration, sound, originalIndex }, index) => {
+                const isSelected = originalIndex === selectedSoundIndex;
                 return (
                   <div
                     key={index}
@@ -60,10 +60,8 @@ export default function Record({
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      if (isSelected)
-                        onSelectSound(null);
-                      else
-                        onSelectSound({ start, sound });
+                      if (isSelected) onSelectSound(null);
+                      else onSelectSound(originalIndex);
                     }}
                   >
                     <div className="sound-text">
@@ -138,7 +136,8 @@ function findMaxTime(records, currentTime = null) {
 function convertRecordToTracks(records = [], currentTime) {
   // Convert record to a format that's easier to work with
   const sounds = [];
-  records = Array.from(records);
+  records = records.map((r, i) => ({ ...r, originalIndex: i }));
+
   while (records.length > 0) {
     const record = records.shift();
     if (record.action === "start") {
@@ -150,11 +149,12 @@ function convertRecordToTracks(records = [], currentTime) {
         duration: endIndex === -1 ?
           currentTime - record.offset : // The key is still down
           records[endIndex].offset - record.offset,
+        originalIndex: record.originalIndex,
       });
       if (endIndex !== -1) records.splice(endIndex, 1);
 
     } else {
-      throw new Error(`Unexpected action: ${record.action}`);
+      // Ignore dangling ends
     }
   }
 
