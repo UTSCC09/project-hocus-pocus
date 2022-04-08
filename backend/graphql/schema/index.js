@@ -43,6 +43,12 @@ type Upvote {
   recordId: String!
 }
 
+type LiveStream {
+  user: String!
+  code: String!
+  in_progress: Boolean!
+}
+
 input UserInput {
   email: String!
   password: String!
@@ -65,6 +71,7 @@ type RootQuery {
   getRecordById(recordId: ID!): Record!
   getPublishedRecordsByPage(page: Int): [Record]!
   getUpvotesByUser: [Upvote]!
+  getLiveStreams: [LiveStream]!
 }
 
 type RootMutation {
@@ -75,6 +82,8 @@ type RootMutation {
   deleteRecord(recordId: ID!): Status!
   upvoteRecord(recordId: ID!): Status!
   undoUpvoteRecord(recordId: ID!): Status!
+  startLiveStream(code: String!): LiveStream!
+  endLiveStream(code: String!): Status!
 }
 
 schema {

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Peer from 'peerjs';
 import AuthContext from "../../context/auth-context";
 import { Navigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import network from "../../helpers/network";
 
 class MePage extends Component {
   peer = new Peer({
@@ -75,6 +77,35 @@ class MePage extends Component {
 
   }
 
+  startLivestream = () => {
+    network(
+      "mutation",
+      `startLiveStream(code: "${this.state.peerId}")`,
+      `user
+      code`,
+      this.context.getToken()
+    ).then((res) => {
+      if (res.data) {
+        // {user: "test@email.com" code: "cb1f011b-770b-4d2b-95fa-ff30270961b5"}
+        console.log(res.data.startLiveStream);
+      }
+    })
+  }
+
+  endLivestream = () => {
+    network(
+      "mutation",
+      `endLiveStream(code: "${this.state.peerId}")`,
+      `success`,
+      this.context.getToken()
+    ).then((res) => {
+      if (res.data) {
+        // {success: true | false}
+        console.log(res.data.endLiveStream);
+      }
+    })
+  }
+
   render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} />
@@ -105,6 +136,8 @@ class MePage extends Component {
             }
           }} placeholder="Connect to peer" />
         </div>
+        <Button onClick={this.startLivestream}>Start livestream</Button>
+        <Button onClick={this.endLivestream}>End livestream</Button>
       </div>
     );
   }
