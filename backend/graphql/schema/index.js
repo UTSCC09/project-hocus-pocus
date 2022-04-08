@@ -30,11 +30,17 @@ type Record {
   author: String!
   record: [Note!]!
   published: Boolean!
+  upvote: Int!
   date: String!
 }
 
 type Status {
   success: Boolean!
+}
+
+type Upvote {
+  email: String!
+  recordId: String!
 }
 
 input UserInput {
@@ -56,7 +62,9 @@ input inputNote {
 type RootQuery {
   login(email: String!, password: String!): AuthData!
   getRecordsByAuthor: [Record]!
+  getRecordById(recordId: ID!): Record!
   getPublishedRecordsByPage(page: Int): [Record]!
+  getUpvotesByUser: [Upvote]!
 }
 
 type RootMutation {
@@ -65,6 +73,8 @@ type RootMutation {
   publishRecord(recordId: ID!): Status!
   unpublishRecord(recordId: ID!): Status!
   deleteRecord(recordId: ID!): Status!
+  upvoteRecord(recordId: ID!): Status!
+  undoUpvoteRecord(recordId: ID!): Status!
 }
 
 schema {

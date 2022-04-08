@@ -7,6 +7,19 @@
 
 .card {
   width: 18rem;
+  height: 10rem;
+  padding: 15px;
   color: black;
   margin: 20px 10px;
+}
+
+.heart-div {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.heart {
+  margin: 5px;
+  width: 20px;
+  height: auto;
 }

@@ -4,6 +4,7 @@ import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import "./index.css";
 import { Navigate } from "react-router-dom";
+import { SuitHeartFill } from 'react-bootstrap-icons';
 
 class MyRecordsPage extends Component {
   state = {
@@ -20,8 +21,9 @@ class MyRecordsPage extends Component {
       "getRecordsByAuthor",
       `_id
       title
-      published`,
-      window.sessionStorage.getItem("token")
+      published
+      upvote`,
+      this.context.getToken()
     ).then((res) => {
       if (res.data) {
         this.setState({ records: res.data.getRecordsByAuthor });
@@ -95,17 +97,17 @@ class MyRecordsPage extends Component {
 
                 <div className="button-group">
                   <Button 
-                    variant="warning" 
+                    variant="dark" 
                     onClick={() => this.setState({ redirect: '/playground', redirect_id: value._id })}
                   >
                       Modify
                   </Button>
-                  <Button>Play</Button>
+                  <Button variant="dark">Play</Button>
                 </div>
 
                 <div className="button-group">
                   <Button 
-                    variant="success" 
+                    variant="dark" 
                     onClick={() => {value.published ? this.unpublishRecord(value._id) : this.publishRecord(value._id)}}
                   >
                     { value.published ? 'Unpublish' : 'Publish' }
@@ -116,6 +118,10 @@ class MyRecordsPage extends Component {
                   >
                     Delete
                   </Button>
+                </div>
+                <div className="heart-div">
+                  {value.upvote}
+                  <SuitHeartFill className="heart"/>
                 </div>
               </Card.Body>
             </Card>

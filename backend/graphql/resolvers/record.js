@@ -47,6 +47,7 @@ module.exports = {
         author: req.email,
         record,
         published: false,
+        upvote: 0,
         date: Date.now()
       });
 
@@ -107,6 +108,15 @@ module.exports = {
     } catch (err) {
       throw err;
     }
+  },
+
+  getRecordById: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    const record = await Record.findOne({ _id: args.recordId });
+    return { ...record._doc, _id: record.id };
   },
 
   getPublishedRecordsByPage: async (args, req) => {

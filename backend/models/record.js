@@ -19,6 +19,10 @@ const recordSchema = new Schema({
     type: Boolean,
     required: true
   },
+  upvote: {
+    type: Number,
+    required: true
+  },
   date: {
     type: Date,
     required: true
