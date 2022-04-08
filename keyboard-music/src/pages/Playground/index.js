@@ -42,18 +42,20 @@ class PlaygroundPage extends React.Component {
   handleKeyDown = (e) => this.handleKeyUpOrDown("down", e);
 
   componentDidMount() {
-    network(
-      "query",
-      `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
-      `_id
-      title
-      published
-      upvote
-      record {offset, sound{note, instrument}, action }`,
-      this.context.getToken()
-    ).then((res) => {
-      this.musicEditor.setRecord(res.data.getRecordById.record);
-    });
+    if (this.props.router.location.state) {
+      network(
+        "query",
+        `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
+        `_id
+        title
+        published
+        upvote
+        record {offset, sound{note, instrument}, action }`,
+        this.context.getToken()
+      ).then((res) => {
+        this.musicEditor.setRecord(res.data.getRecordById.record);
+      });
+    }
     document.addEventListener("keyup", this.handleKeyUp);
     document.addEventListener("keydown", this.handleKeyDown);
   }
