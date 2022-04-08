@@ -1,7 +1,7 @@
 import React from "react";
 import "./musicEditor.css";
 import * as Tone from "tone";
-import { Button, FormControl, InputGroup } from "react-bootstrap";
+import { Button, FormControl, InputGroup, ButtonGroup } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
@@ -234,7 +234,7 @@ export default class MusicEditor extends React.Component {
     return (
       <div className="musicEditor">
         <div className="toolkit">
-          <div className="recordingTools">
+          <ButtonGroup className="recordingTools">
             <Button onClick={this.startRecording}>Start Recording</Button>
             <Button onClick={this.stopRecording}>Stop Recording</Button>
             <Button onClick={this.reset} variant="danger">
@@ -246,7 +246,7 @@ export default class MusicEditor extends React.Component {
             <Button onClick={this.play} variant="success">
               Play
             </Button>
-          </div>
+          </ButtonGroup>
           <div className="timeDisplayer">
             {formatTime(this.state.currentTime)}
           </div>
