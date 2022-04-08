@@ -1,11 +1,7 @@
 import React from "react";
 import "./musicEditor.css";
 import * as Tone from "tone";
-import {
-  Button,
-  FormControl,
-  InputGroup,
-} from "react-bootstrap";
+import { Button, FormControl, InputGroup } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
@@ -125,7 +121,6 @@ export default class MusicEditor extends React.Component {
     clearInterval(this.clock);
   };
 
-
   onSelectSound = (soundIndex) => {
     if (soundIndex === null) {
       this.setState({
@@ -137,10 +132,11 @@ export default class MusicEditor extends React.Component {
     }
 
     const sound = this.state.currentRecord[soundIndex];
-    const endSound = this.state.currentRecord.find(record =>
-      record.action === 'end' &&
-      record.sound.note === sound.sound.note &&
-      record.offset >= sound.offset
+    const endSound = this.state.currentRecord.find(
+      (record) =>
+        record.action === "end" &&
+        record.sound.note === sound.sound.note &&
+        record.offset >= sound.offset
     );
     const duration = endSound ? endSound.offset - sound.offset : 0;
     const soundEditorValues = {
@@ -154,7 +150,7 @@ export default class MusicEditor extends React.Component {
     this.setState({
       selectedSoundIndex: soundIndex,
     });
-  }
+  };
 
   save = () => {
     saveRecord(
@@ -164,88 +160,101 @@ export default class MusicEditor extends React.Component {
     );
   };
 
-
   onUpdate = (newValues) => {
     const oldValue = this.state.currentRecord[this.state.selectedSoundIndex];
-    const endRecordIndex = this.state.currentRecord.findIndex(record =>
-      record.action === 'end' &&
-      record.sound.note === oldValue.sound.note &&
-      record.offset >= oldValue.offset
+    const endRecordIndex = this.state.currentRecord.findIndex(
+      (record) =>
+        record.action === "end" &&
+        record.sound.note === oldValue.sound.note &&
+        record.offset >= oldValue.offset
     );
 
     const newRecord = this.state.currentRecord.map((record, index) =>
-      index === this.state.selectedSoundIndex ?
-        {
-          offset: newValues.start,
-          sound: {
-            instrument: record.sound.instrument,
-            note: newValues.note,
-          },
-          action: 'start',
-        }
-        :
-        index === endRecordIndex ?
-          {
+      index === this.state.selectedSoundIndex
+        ? {
+            offset: newValues.start,
+            sound: {
+              instrument: record.sound.instrument,
+              note: newValues.note,
+            },
+            action: "start",
+          }
+        : index === endRecordIndex
+        ? {
             offset: newValues.start + newValues.duration,
             sound: {
               instrument: record.sound.instrument,
               note: newValues.note,
             },
-            action: 'end',
+            action: "end",
           }
-          :
-          record
+        : record
     );
 
     this.setState({ currentRecord: newRecord });
     this.noteEditor.onSelect(newValues);
-  }
+  };
 
   onDelete = () => {
-    const newRecord = this.state.currentRecord.filter((record, index) =>
-      index !== this.state.selectedSoundIndex
+    const newRecord = this.state.currentRecord.filter(
+      (record, index) => index !== this.state.selectedSoundIndex
     );
 
     this.setState({ currentRecord: newRecord });
     this.noteEditor.onSelect(null);
-  }
+  };
 
   onCreate = (newValues) => {
-    const newRecords = [{
-      offset: newValues.start,
-      sound: {
-        instrument: 'piano',
-        note: newValues.note,
+    const newRecords = [
+      {
+        offset: newValues.start,
+        sound: {
+          instrument: "piano",
+          note: newValues.note,
+        },
+        action: "start",
       },
-      action: 'start',
-    },
-    {
-      offset: newValues.start + newValues.duration,
-      sound: {
-        instrument: 'piano',
-        note: newValues.note,
+      {
+        offset: newValues.start + newValues.duration,
+        sound: {
+          instrument: "piano",
+          note: newValues.note,
+        },
+        action: "end",
       },
-      action: 'end',
-    }]
+    ];
 
     this.setState({
       currentRecord: [...this.state.currentRecord, ...newRecords],
     });
     this.noteEditor.onSelect(null);
-  }
+  };
 
   render() {
     return (
       <div className="musicEditor">
         <div className="toolkit">
-          <Button onClick={this.startRecording}>Start Recording</Button>
-          <Button onClick={this.stopRecording}>Stop Recording</Button>
-          <Button onClick={this.reset}>Reset</Button>
-          <Button onClick={this.pause}>Pause</Button>
-          <Button onClick={this.play}>Play</Button>
-          <span>{formatTime(this.state.currentTime)}</span>
-
-          <Button onClick={this.save}>Save</Button>
+          <div className="recordingTools">
+            <Button onClick={this.startRecording}>Start Recording</Button>
+            <Button onClick={this.stopRecording}>Stop Recording</Button>
+            <Button onClick={this.reset} variant="danger">
+              Reset
+            </Button>
+            <Button onClick={this.pause} variant="warning">
+              Pause
+            </Button>
+            <Button onClick={this.play} variant="success">
+              Play
+            </Button>
+          </div>
+          <div className="timeDisplayer">
+            {formatTime(this.state.currentTime)}
+          </div>
+          <div className="generalTools">
+            <Button onClick={this.save} variant="success">
+              Save
+            </Button>
+          </div>
         </div>
         <div className="editor">
           <Record
@@ -259,7 +268,7 @@ export default class MusicEditor extends React.Component {
         </div>
         <div>
           <NoteEditor
-            ref={ref => this.noteEditor = ref}
+            ref={(ref) => (this.noteEditor = ref)}
             onUpdate={this.onUpdate}
             onCreate={this.onCreate}
             onDelete={this.onDelete}
@@ -273,19 +282,19 @@ export default class MusicEditor extends React.Component {
 class NoteEditor extends React.Component {
   state = {
     creating: true,
-    note: '',
+    note: "",
     start: 0,
     duration: 0,
-  }
+  };
 
   reset = () => {
     this.setState({
       creating: true,
-      note: '',
+      note: "",
       start: 0,
       duration: 0,
     });
-  }
+  };
 
   onSelect = (details) => {
     if (details === null) {
@@ -294,7 +303,7 @@ class NoteEditor extends React.Component {
     }
     const { note, start, duration } = details;
     this.setState({ note, start, duration, creating: false });
-  }
+  };
 
   validateAndSubmit = () => {
     const { note, start, duration } = this.state;
@@ -304,11 +313,11 @@ class NoteEditor extends React.Component {
     } else {
       this.props.onUpdate({ note, start, duration });
     }
-  }
+  };
 
   delete = () => {
     this.props.onDelete();
-  }
+  };
 
   render() {
     return (
@@ -335,10 +344,16 @@ class NoteEditor extends React.Component {
           min={0}
           step={100}
           value={this.state.duration}
-          onChange={(e) => this.setState({ duration: parseInt(e.target.value) })}
+          onChange={(e) =>
+            this.setState({ duration: parseInt(e.target.value) })
+          }
         />
-        <Button variant="primary" onClick={() => this.validateAndSubmit()}>{this.state.creating ? 'Create' : 'Save'}</Button>
-        <Button variant="warning" onClick={() => this.delete()}>Delete</Button>
+        <Button variant="primary" onClick={() => this.validateAndSubmit()}>
+          {this.state.creating ? "Create" : "Save"}
+        </Button>
+        <Button variant="danger" onClick={() => this.delete()}>
+          Delete
+        </Button>
       </InputGroup>
     );
   }
