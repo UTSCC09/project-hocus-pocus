@@ -19,7 +19,7 @@ class LoginPage extends Component {
 
   componentDidMount() {
     if (this.context.getToken()) {
-      this.setState({ redirect: '/community' });
+      this.setState({ redirect: "/community" });
     }
   }
 
@@ -86,7 +86,7 @@ class LoginPage extends Component {
 
   render() {
     if (this.state.redirect) {
-      return <Navigate to={this.state.redirect} />
+      return <Navigate to={this.state.redirect} />;
     }
 
     return (
@@ -115,7 +115,7 @@ class LoginPage extends Component {
           </Form.Group>
 
           <Button
-            className="btn"
+            className="form-btn"
             variant="primary"
             type="submit"
             onClick={this.signUp}
@@ -123,7 +123,7 @@ class LoginPage extends Component {
             Sign Up
           </Button>
           <Button
-            className="btn"
+            className="form-btn"
             variant="primary"
             type="submit"
             onClick={this.signIn}

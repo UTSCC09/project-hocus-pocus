@@ -2,7 +2,6 @@ import React from 'react';
 import './index.css';
 
 const TRACK_HEIGHT = 30;
-const ZOOM_FACTOR = 0.5;
 
 export default function Record({
   record,
@@ -12,6 +11,7 @@ export default function Record({
   currentTime,
   onSelectSound,
   selectedSoundIndex,
+  zoomFactor,
 }) {
 
   const tracks = convertRecordToTracks(record, currentTime);
@@ -21,12 +21,12 @@ export default function Record({
 
   React.useEffect(() => {
     if (scrollView.current) {
-      const targetPosition = currentTime * ZOOM_FACTOR;
+      const targetPosition = currentTime * zoomFactor;
       if (scrollToCurrentTime) {
         scrollView.current.scroll({ left: targetPosition - 200 });
       }
     }
-  }, [currentTime, scrollToCurrentTime]);
+  }, [currentTime, scrollToCurrentTime, zoomFactor]);
 
   return (
     <div
@@ -36,12 +36,12 @@ export default function Record({
       onClick={(e) => {
         if (e.currentTarget.classList.contains("record-container")) {
           const x = e.nativeEvent.clientX + scrollView.current.scrollLeft;
-          const time = x / ZOOM_FACTOR;
+          const time = x / zoomFactor;
           onClickOnTime(time);
         }
       }}
     >
-      <div style={{ width: (maxLength * ZOOM_FACTOR) + 400 }}></div>
+      <div style={{ width: (maxLength * zoomFactor) + 400 }}></div>
       {
         tracks.map((track, i) => (
           <div key={i} className="track" style={{ top: i * (TRACK_HEIGHT + 10), height: TRACK_HEIGHT }}>
@@ -53,8 +53,8 @@ export default function Record({
                     key={index}
                     className={`single-sound ${isSelected ? "selected" : ""}`}
                     style={{
-                      left: (start * ZOOM_FACTOR),
-                      width: (duration * ZOOM_FACTOR),
+                      left: (start * zoomFactor),
+                      width: (duration * zoomFactor),
                       ...getColorStylesForSound(sound, isSelected),
                     }}
                     onClick={(e) => {
@@ -78,7 +78,7 @@ export default function Record({
       {
         showGrid && (
           range(0, maxLength + 100, 100).map((time) => (
-            <div key={time} className="vertical-line" style={{ left: time * ZOOM_FACTOR }}>
+            <div key={time} className="vertical-line" style={{ left: time * zoomFactor }}>
               <div>{time % 500 === 0 ? String(time / 1000) + 's' : ''}</div>
             </div>
           ))
@@ -87,7 +87,7 @@ export default function Record({
 
       {
         currentTime && (
-          <div className="current-vertical-line" style={{ left: currentTime * ZOOM_FACTOR }}>
+          <div className="current-vertical-line" style={{ left: currentTime * zoomFactor }}>
             <div>{String(currentTime / 1000) + 's'}</div>
           </div>
         )
