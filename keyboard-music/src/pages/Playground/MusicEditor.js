@@ -5,12 +5,16 @@ import { Button, FormControl, InputGroup, ButtonGroup } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
+import { ThermometerSun } from "react-bootstrap-icons";
 
 const synth = new Tone.PolySynth().toDestination();
 const UPDATE_INTERVAL_MS = 1;
 
 export default class MusicEditor extends React.Component {
   static contextType = AuthContext;
+  componentDidMount = () => {
+    console.log("ASD", this.props);
+  };
 
   state = {
     isPlaying: false,
@@ -26,7 +30,11 @@ export default class MusicEditor extends React.Component {
   noteEditor = null;
 
   setRecord = (record) => {
-    this.setState({ currentRecord: record, currentTime: 0, selectedSoundIndex: null });
+    this.setState({
+      currentRecord: record,
+      currentTime: 0,
+      selectedSoundIndex: null,
+    });
   };
 
   reset = () => {
@@ -182,15 +190,15 @@ export default class MusicEditor extends React.Component {
     const newRecord = this.state.currentRecord.map((record, index) =>
       index === this.state.selectedSoundIndex
         ? {
-          offset: newValues.start,
-          sound: {
-            instrument: record.sound.instrument,
-            note: newValues.note,
-          },
-          action: "start",
-        }
+            offset: newValues.start,
+            sound: {
+              instrument: record.sound.instrument,
+              note: newValues.note,
+            },
+            action: "start",
+          }
         : index === endRecordIndex
-          ? {
+        ? {
             offset: newValues.start + newValues.duration,
             sound: {
               instrument: record.sound.instrument,
@@ -198,7 +206,7 @@ export default class MusicEditor extends React.Component {
             },
             action: "end",
           }
-          : record
+        : record
     );
 
     this.setState({ currentRecord: newRecord });
@@ -244,21 +252,35 @@ export default class MusicEditor extends React.Component {
     this.setState({
       zoomFactor: Math.max(0.2, Math.min(2.0, this.state.zoomFactor + diff)),
     });
-  }
+  };
 
   render() {
     return (
       <div className="musicEditor">
         <div className="toolkit">
           <ButtonGroup className="recordingTools">
-            {
-              this.props.enableEditing ?
-                <>
-                  <Button disabled={this.state.isPlaying} onClick={this.state.isRecording ? this.stopRecording : this.startRecording}>{this.state.isRecording ? 'Stop Recording' : 'Start Recording'}</Button>
-                </> : null
-            }
-            <Button variant="success" disabled={this.state.isRecording} onClick={this.state.isPlaying ? this.pause : this.play}>
-              {this.state.isPlaying ? 'Pause' : 'Play'}
+            {this.props.enableEditing ? (
+              <>
+                <Button
+                  disabled={this.state.isPlaying}
+                  onClick={
+                    this.state.isRecording
+                      ? this.stopRecording
+                      : this.startRecording
+                  }
+                >
+                  {this.state.isRecording
+                    ? "Stop Recording"
+                    : "Start Recording"}
+                </Button>
+              </>
+            ) : null}
+            <Button
+              variant="success"
+              disabled={this.state.isRecording}
+              onClick={this.state.isPlaying ? this.pause : this.play}
+            >
+              {this.state.isPlaying ? "Pause" : "Play"}
             </Button>
             <Button onClick={() => this.zoom(+0.1)}>Zoom In</Button>
             <Button onClick={() => this.zoom(-0.1)}>Zoom Out</Button>
@@ -267,7 +289,11 @@ export default class MusicEditor extends React.Component {
             {formatTime(this.state.currentTime)}
           </div>
           <div className="generalTools">
-            <Button onClick={this.save} disabled={this.state.isRecording || this.state.isPlaying} variant="success">
+            <Button
+              onClick={this.save}
+              disabled={this.state.isRecording || this.state.isPlaying}
+              variant="success"
+            >
               Save
             </Button>
           </div>
@@ -284,16 +310,14 @@ export default class MusicEditor extends React.Component {
           />
         </div>
         <div>
-          {
-            this.props.enableEditing ?
-              <NoteEditor
-                ref={ref => this.noteEditor = ref}
-                onUpdate={this.onUpdate}
-                onCreate={this.onCreate}
-                onDelete={this.onDelete}
-              />
-              : null
-          }
+          {this.props.enableEditing ? (
+            <NoteEditor
+              ref={(ref) => (this.noteEditor = ref)}
+              onUpdate={this.onUpdate}
+              onCreate={this.onCreate}
+              onDelete={this.onDelete}
+            />
+          ) : null}
         </div>
       </div>
     );

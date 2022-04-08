@@ -10,6 +10,8 @@ import Peer from "peerjs";
 import { Form } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
+import network from "../../helpers/network";
+
 import {
   Button,
   Dropdown,
@@ -18,16 +20,20 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import beatFile from "../../static/music/beat/beat1.wav";
+import withRouter from "../../helpers/withRouter";
 
 const beatSound = new Audio(beatFile);
 const synth = new Tone.PolySynth().toDestination();
 
-export default class PlaygroundPage extends React.Component {
+class PlaygroundPage extends React.Component {
   state = {
     SPN: 4,
     isBeating: false,
     BPM: 60,
+    introducedRecord: [],
   };
+
+  static contextType = AuthContext;
 
   musicEditor = null;
 
@@ -35,6 +41,18 @@ export default class PlaygroundPage extends React.Component {
   handleKeyDown = (e) => this.handleKeyUpOrDown("down", e);
 
   componentDidMount() {
+    network(
+      "query",
+      `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
+      `_id
+      title
+      published
+      upvote
+      record {offset, sound{note, instrument}, action }`,
+      this.context.getToken()
+    ).then((res) => {
+      this.musicEditor.setRecord(res.data.getRecordById.record);
+    });
     document.addEventListener("keyup", this.handleKeyUp);
     document.addEventListener("keydown", this.handleKeyDown);
   }
@@ -109,7 +127,10 @@ export default class PlaygroundPage extends React.Component {
   render() {
     return (
       <div className="playArea">
-        <MusicEditor enableEditing={true} ref={(ref) => (this.musicEditor = ref)} />
+        <MusicEditor
+          enableEditing={true}
+          ref={(ref) => (this.musicEditor = ref)}
+        />
         <div>
           <InputGroup className="beater w-25">
             <InputGroup.Text>BPM</InputGroup.Text>
@@ -159,3 +180,5 @@ function checkAndStandardizeMusicKeyFunctionName(func, SPN) {
     return null;
   }
 }
+
+export default withRouter(PlaygroundPage);
