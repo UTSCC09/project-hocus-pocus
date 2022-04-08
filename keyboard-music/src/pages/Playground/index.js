@@ -10,6 +10,13 @@ import Peer from "peerjs";
 import { Form } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  FormControl,
+  InputGroup,
+} from "react-bootstrap";
 import beatFile from "../../static/music/beat/beat1.wav";
 
 const beatSound = new Audio(beatFile);
@@ -101,10 +108,20 @@ export default class PlaygroundPage extends React.Component {
 
   render() {
     return (
-      <>
-        <Keyboard SPN={this.state.SPN} />
+      <div className="playArea">
         <MusicEditor ref={(ref) => (this.musicEditor = ref)} />
-      </>
+        <InputGroup className="beater w-25">
+          <InputGroup.Text>BPM</InputGroup.Text>
+          <FormControl
+            aria-label="BPM"
+            value={this.state.BPM}
+            onChange={(e) => {
+              this.setState({ BPM: e.target.value });
+            }}
+          />
+        </InputGroup>
+        <Keyboard SPN={this.state.SPN} />
+      </div>
     );
   }
 }

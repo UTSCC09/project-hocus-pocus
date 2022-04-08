@@ -1,11 +1,9 @@
 /* code referenced and modified from https://codepen.io/irajsuhail/pen/mYMZVm */
 
 .keyboard {
-  /* horizontally centered */
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  margin: auto;
+  width: 1148px;
 
   border-radius: 10px;
   display: grid;
