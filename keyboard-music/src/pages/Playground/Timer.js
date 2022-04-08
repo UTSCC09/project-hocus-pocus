@@ -25,7 +25,7 @@ const Timer = (props) => {
 
   return (
     <div className="Timer">
-      {formatTime(relativeTime)}
+      {formatTime(props.relativeTime)}
       <Button onClick={props.start}>Start</Button>
       <Button variant="warning" onClick={props.pause}>
         Pause
@@ -46,10 +46,11 @@ function formatTime(ms) {
   const seconds = Math.floor((ms % 60_000) / 1000);
   const tenths = Math.floor((ms % 1000) / 100);
   return `${pad2(minutes)}:${pad2(seconds)}.${tenths}`;
+
+  function pad2(n) {
+    return n < 10 ? `0${n}` : n;
+  }
 }
 
-function pad2(n) {
-  return n < 10 ? `0${n}` : n;
-}
 
 export default Timer;

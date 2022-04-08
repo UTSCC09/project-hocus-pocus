@@ -16,6 +16,8 @@ export default class PlaygroundPage extends React.Component {
     SPN: 4,
   }
 
+  musicEditor = null;
+
   handleKeyUp = (e) => this.handleKeyUpOrDown('up', e);
   handleKeyDown = (e) => this.handleKeyUpOrDown('down', e);
 
@@ -39,17 +41,24 @@ export default class PlaygroundPage extends React.Component {
       this.setState({ SPN: parseInt(assignedKeyFunction.slice(-1)) });
     }
 
-    const action = checkAndStandardizeMusicKeyFunctionName(assignedKeyFunction, this.state.SPN);
-    if (!action) {
+    const note = checkAndStandardizeMusicKeyFunctionName(assignedKeyFunction, this.state.SPN);
+    if (!note) {
       console.log('Ignoring key event for key:', e.code);
     }
 
     if (upOrDown === "down") {
       playKeyPressedAnimation(keyCode);
-      action && synth.triggerAttack(action, Tone.now());
+      if (note) {
+        synth.triggerAttack(note, Tone.now());
+        this.musicEditor.onNewNote(recordEntry(note, 'start'));
+      }
     } else if (upOrDown === "up") {
       removeKeyPressedAnimation(keyCode);
-      action && synth.triggerRelease(action, Tone.now());
+      if (note) {
+        synth.triggerRelease(note, Tone.now());
+        this.musicEditor.onNewNote(recordEntry(note, 'end'));
+      }
+
     } else {
       console.error('Unknown upOrDown:', upOrDown);
     }
@@ -58,9 +67,19 @@ export default class PlaygroundPage extends React.Component {
   render() {
     return (<>
       <Keyboard SPN={this.state.SPN} />
-      {/* <MusicEditor record={record} isRecording={isRecording} title={title} /> */}
+      <MusicEditor ref={(ref) => this.musicEditor = ref} />
     </>);
   }
+}
+
+function recordEntry(note, action) {
+  return {
+    sound: {
+      instrument: "piano",
+      note,
+    },
+    action,
+  };
 }
 
 
