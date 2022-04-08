@@ -11,6 +11,7 @@ class CommunityPage extends Component {
     records: [],
     page: 1,
     upvotes: [],
+    livestreams: [],
   };
 
   static contextType = AuthContext;
@@ -73,6 +74,34 @@ class CommunityPage extends Component {
     })
   }
 
+  getLiveStreams = () => {
+    network(
+      "query",
+      "getLiveStreams",
+      `user
+      code`,
+      this.context.getToken()
+    ).then(res => {
+      if (res.data) {
+        this.setState({ livestreams: res.data.getLiveStreams });
+        console.log(this.state.livestreams);
+      }
+    })
+  }
+
+  getLiveByUser = (email) => {
+    network(
+      "query",
+      `getLiveByUser(user: "${email}")`,
+      `code`,
+      this.context.getToken()
+    ).then(res => {
+      if (res.data) {
+        console.log(res.data.getLiveByUser.code);
+      }
+    })
+  }
+
   componentDidMount = () => {
     this.getPublishedRecords();
     this.getUserUpvotes();
@@ -95,6 +124,8 @@ class CommunityPage extends Component {
           </Card>
         );
       })}
+      <Button onClick={this.getLiveStreams}>Get livestreams</Button>
+      <Button onClick={() => this.getLiveByUser('minqi0303@gmail.com')}>Get live code of minqi0303@gmail.com</Button>
     </div>);
   }
 }

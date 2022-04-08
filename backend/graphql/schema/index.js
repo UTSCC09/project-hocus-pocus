@@ -72,6 +72,7 @@ type RootQuery {
   getPublishedRecordsByPage(page: Int): [Record]!
   getUpvotesByUser: [Upvote]!
   getLiveStreams: [LiveStream]!
+  getLiveByUser(user: String!): LiveStream!
 }
 
 type RootMutation {
