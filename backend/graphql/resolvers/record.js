@@ -121,10 +121,6 @@ module.exports = {
 
   getPublishedRecordsByPage: async (args, req) => {
     try {
-      if (!req.isAuth) {
-        throw new Error("Unauthenticated!");
-      }
-
       if (args.page < 1) {
         throw new Error("Invalid page number!");
       }
