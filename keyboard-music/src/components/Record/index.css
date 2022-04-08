@@ -1,7 +1,7 @@
 .record-container {
   position: relative;
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   user-select: none;
   cursor: text;
 }
