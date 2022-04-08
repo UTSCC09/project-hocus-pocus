@@ -1,7 +1,9 @@
 .record-container {
   position: relative;
   width: 100%;
-  overflow-x: auto;
+  overflow-x: scroll;
+  user-select: none;
+  cursor: text;
 }
 
 .track {
@@ -31,7 +33,8 @@
   color: white;
 }
 
-.sound-text:hover {
+.sound-text:hover,
+.single-sound.selected .sound-text {
   opacity: 1;
 }
 
@@ -43,7 +46,23 @@
   z-index: -1;
 }
 
-.vertical-line span {
+.current-vertical-line {
+  width: 2px;
+  height: 100%;
+  position: absolute;
+  background-color: #ffa500;
+  color: #ffa500;
+  z-index: -1;
+}
+
+.vertical-line div {
   position: absolute;
   bottom: 0;
+  padding-left: 4px;
+}
+
+.current-vertical-line div {
+  position: absolute;
+  bottom: 14px;
+  padding-left: 4px;
 }
