@@ -42,18 +42,26 @@ module.exports = {
         throw new Error("Action must be either 'start' or 'end'");
       }
 
-      const musicScore = new Record({
-        title,
-        author: req.email,
-        record,
-        published: false,
-        upvote: 0,
-        date: Date.now()
-      });
-
-      // write to database
-      const writeResult = await musicScore.save();
-      return { ...writeResult._doc, _id: writeResult.id };
+      const existingRecord = await Record.findOne({ title, author: req.email });
+      if (existingRecord) {
+        // Modify existing record
+        const result = await Record.findOneAndUpdate({ title, author: req.email }, { record });
+        return result;
+      } else {
+        // Create new
+        const musicScore = new Record({
+          title,
+          author: req.email,
+          record,
+          published: false,
+          upvote: 0,
+          date: Date.now()
+        });
+  
+        // write to database
+        const writeResult = await musicScore.save();
+        return { ...writeResult._doc, _id: writeResult.id };
+      }
 
     } catch (err) {
       throw err;
@@ -121,10 +129,6 @@ module.exports = {
 
   getPublishedRecordsByPage: async (args, req) => {
     try {
-      if (!req.isAuth) {
-        throw new Error("Unauthenticated!");
-      }
-
       if (args.page < 1) {
         throw new Error("Invalid page number!");
       }

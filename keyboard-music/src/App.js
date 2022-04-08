@@ -7,6 +7,7 @@ import MePage from "./pages/Me";
 import PlaygroundPage from "./pages/Playground";
 import CommunityPage from "./pages/Community";
 import MyRecordsPage from "./pages/MyRecords";
+import ViewOnlyPage from "./pages/Playground/ViewOnly";
 import Navigation from "./components/Navigation";
 import AuthContext from "./context/auth-context";
 
@@ -18,7 +19,7 @@ class App extends Component {
 
   componentDidMount() {
     if (window.sessionStorage.getItem("token") && window.sessionStorage.getItem("userId")) {
-      this.setState({ 
+      this.setState({
         token: window.sessionStorage.getItem("token"),
         userId: window.sessionStorage.getItem("userId"),
       })
@@ -63,6 +64,7 @@ class App extends Component {
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/my_records" element={<MyRecordsPage />} />
+            <Route path="/view" element={<ViewOnlyPage />} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

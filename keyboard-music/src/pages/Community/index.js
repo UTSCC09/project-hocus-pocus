@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, Alert } from 'react-bootstrap';
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import { SuitHeart, SuitHeartFill } from 'react-bootstrap-icons';
@@ -12,6 +12,7 @@ class CommunityPage extends Component {
     page: 1,
     upvotes: [],
     livestreams: [],
+    alert_message: ""
   };
 
   static contextType = AuthContext;
@@ -47,6 +48,10 @@ class CommunityPage extends Component {
   }
 
   upvote = (recordId) => {
+    if (!this.context.getToken()) {
+      this.setState({ alert_message: 'You must login to do this operation!' });
+      return;
+    }
     network(
       "mutation",
       `upvoteRecord(recordId: "${recordId}")`,
@@ -61,6 +66,10 @@ class CommunityPage extends Component {
   }
 
   undoUpvote = (recordId) => {
+    if (!this.context.getToken()) {
+      this.setState({ alert_message: 'You must login to do this operation!' });
+      return;
+    }
     network(
       "mutation",
       `undoUpvoteRecord(recordId: "${recordId}")`,
@@ -104,29 +113,35 @@ class CommunityPage extends Component {
 
   componentDidMount = () => {
     this.getPublishedRecords();
-    this.getUserUpvotes();
+    if (this.context.getToken()) {
+      this.getUserUpvotes();
+    }
   }
 
   render() {
     return (
-    <div className="me">
-      {this.state.records.map((record, index) => {
-        return (
-          <Card key={index} className="card">
-            <Card.Title className="card-title">{record.title}</Card.Title>
-            <Card.Text>Author: {record.author}</Card.Text>
-            <Button className="btn" variant="dark">Play Music</Button>
-            <div className="heart-div">
-              {record.upvote}
-              {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
-              {!this.state.upvotes.includes(record._id) && <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />}
-            </div>
-          </Card>
-        );
-      })}
+    <div>
+      {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({alert_message: ""})}>{this.state.alert_message}</Alert>}
+      <div className="me">
+        {this.state.records.map((record, index) => {
+          return (
+            <Card key={index} className="card">
+              <Card.Title className="card-title">{record.title}</Card.Title>
+              <Card.Text>Author: {record.author}</Card.Text>
+              <Button className="btn" variant="dark">Play Music</Button>
+              <div className="heart-div">
+                {record.upvote}
+                {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
+                {!this.state.upvotes.includes(record._id) && <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
       <Button onClick={this.getLiveStreams}>Get livestreams</Button>
       <Button onClick={() => this.getLiveByUser('minqi0303@gmail.com')}>Get live code of minqi0303@gmail.com</Button>
-    </div>);
+    </div>
+    );
   }
 }
 

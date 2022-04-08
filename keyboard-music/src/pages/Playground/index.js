@@ -21,6 +21,7 @@ import {
 } from "react-bootstrap";
 import beatFile from "../../static/music/beat/beat1.wav";
 import withRouter from "../../helpers/withRouter";
+import Live from './Live';
 
 const beatSound = new Audio(beatFile);
 const synth = new Tone.PolySynth().toDestination();
@@ -41,18 +42,20 @@ class PlaygroundPage extends React.Component {
   handleKeyDown = (e) => this.handleKeyUpOrDown("down", e);
 
   componentDidMount() {
-    network(
-      "query",
-      `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
-      `_id
-      title
-      published
-      upvote
-      record {offset, sound{note, instrument}, action }`,
-      this.context.getToken()
-    ).then((res) => {
-      this.musicEditor.setRecord(res.data.getRecordById.record);
-    });
+    if (this.props.router.location.state) {
+      network(
+        "query",
+        `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
+        `_id
+        title
+        published
+        upvote
+        record {offset, sound{note, instrument}, action }`,
+        this.context.getToken()
+      ).then((res) => {
+        this.musicEditor.setRecord(res.data.getRecordById.record);
+      });
+    }
     document.addEventListener("keyup", this.handleKeyUp);
     document.addEventListener("keydown", this.handleKeyDown);
   }
@@ -127,6 +130,7 @@ class PlaygroundPage extends React.Component {
   render() {
     return (
       <div className="playArea">
+        <Live />
         <MusicEditor
           enableEditing={true}
           ref={(ref) => (this.musicEditor = ref)}
