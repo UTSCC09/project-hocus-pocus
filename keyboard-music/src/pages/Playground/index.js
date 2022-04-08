@@ -109,7 +109,7 @@ export default class PlaygroundPage extends React.Component {
   render() {
     return (
       <div className="playArea">
-        <MusicEditor ref={(ref) => (this.musicEditor = ref)} />
+        <MusicEditor enableEditing={true} ref={(ref) => (this.musicEditor = ref)} />
         <div>
           <InputGroup className="beater w-25">
             <InputGroup.Text>BPM</InputGroup.Text>
