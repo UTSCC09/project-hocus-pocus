@@ -35,7 +35,7 @@ export default function Record({
       style={{ height: (tracks.length + 4) * TRACK_HEIGHT, minHeight: 4 * TRACK_HEIGHT }}
       onClick={(e) => {
         if (e.currentTarget.classList.contains("record-container")) {
-          const x = e.nativeEvent.clientX + scrollView.current.scrollLeft;
+          const x = e.nativeEvent.clientX + scrollView.current.scrollLeft - 30;
           const time = x / zoomFactor;
           onClickOnTime(time);
         }

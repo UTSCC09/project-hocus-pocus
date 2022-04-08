@@ -7,7 +7,7 @@ import Timer from "./Timer";
 import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
 import Peer from "peerjs";
-import { Form } from "react-bootstrap";
+import { ButtonGroup, Form } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
 import network from "../../helpers/network";
@@ -20,7 +20,9 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import withRouter from "../../helpers/withRouter";
-import Live from './Live';
+
+const synth = new Tone.PolySynth().toDestination();
+
 
 class PlaygroundPage extends React.Component {
   static contextType = AuthContext;
@@ -30,7 +32,7 @@ class PlaygroundPage extends React.Component {
   musicEditor = null;
 
   componentDidMount() {
-    if (this.props.router.location.state) {
+    if (this.props.router.location.state?.recordId) {
       // Coming from view
       fetchRecord(
         this.props.router.location.state.recordId,
@@ -40,7 +42,8 @@ class PlaygroundPage extends React.Component {
       );
     } else {
       // Coming from Live
-      const authorId = 'a@example.com' // this.props.router.location.state.liveAuthorId;
+      const authorId = this.props.router.location.state.liveAuthorId;
+      this.authorId = authorId;
       this.setState({
         isFromLive: true,
         connectWith: authorId,
@@ -74,26 +77,54 @@ class PlaygroundPage extends React.Component {
     }
 
     this.setState({ connectionStatus: 'connecting to stream' });
-    this.peer.on('connection', (conn) => {
-      this.setState({ connectionStatus: 'connected' });
-      conn.on('data', (data) => {
-        console.log(data);
-      });
+    const connection = this.peer.connect(liveToken);
+    this.connection = connection;
 
-      conn.on('close', () => {
-        this.setState({ connectionStatus: 'disconnected' });
-      });
+    connection.on('open', () => {
+      this.setState({ connectionStatus: 'connected' });
+      this.musicEditor.reset();
+      this.musicEditor.startRecording();
     });
 
-    this.peer.connect(liveToken);
-  };
+    connection.on('data', (data) => {
+      if (data.type === 'recordEntry') {
+        if (data.recordEntry.action === "start") {
+          synth.triggerAttack(data.recordEntry.sound.note);
+        } else if (data.recordEntry.action === "end") {
+          synth.triggerRelease(data.recordEntry.sound.note);
+        }
+        this.musicEditor.onNewNote(data.recordEntry);
+        if (this.musicEditor.state.currentTime > 20000) {
+          this.musicEditor.startRecording();
+          this.musicEditor.stopRecording();
+          this.musicEditor.reset();
+        }
+      }
+    });
 
+    connection.on('close', () => {
+      this.setState({ connectionStatus: 'disconnected' });
+      synth.releaseAll();
+      this.musicEditor.stopRecording();
+    });
+  };
 
   render() {
     return (
       <div style={{ margin: '200px 30px' }}>
         {!this.state.isFromLive ? null :
-          <>{this.state.connectionStatus}</>
+          <div>
+            <ButtonGroup>
+              <Button
+                onClick={() =>
+                  this.state.connectionStatus !== 'connected' ?
+                    this.lookForStream(this.authorId) :
+                    this.connection.close()
+                }
+              >{this.state.connectionStatus === 'connected' ? 'Disconnect' : this.state.connectionStatus === 'disconnected' ? 'Reconnect' : 'Retry'}</Button>
+            </ButtonGroup>
+            {this.state.connectionStatus}
+          </div>
         }
 
         <MusicEditor
@@ -106,15 +137,17 @@ class PlaygroundPage extends React.Component {
 }
 
 async function getLiveByUser(email, token) {
-  const res = await network(
-    "query",
-    `getLiveByUser(user: "${email}")`,
-    `code`,
-    token,
-  );
-
-  if (!res) return null;
-  return res.data.getLiveByUser.code;
+  try {
+    const res = await network(
+      "query",
+      `getLiveByUser(user: "${email}")`,
+      `code`,
+      token,
+    );
+    return res?.data?.getLiveByUser?.code ?? null;
+  } catch {
+    return null;
+  }
 }
 
 

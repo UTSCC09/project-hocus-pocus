@@ -37,6 +37,7 @@ class PlaygroundPage extends React.Component {
   static contextType = AuthContext;
 
   musicEditor = null;
+  live = null;
 
   handleKeyUp = (e) => this.handleKeyUpOrDown("up", e);
   handleKeyDown = (e) => this.handleKeyUpOrDown("down", e);
@@ -110,6 +111,7 @@ class PlaygroundPage extends React.Component {
       } else {
         synth.triggerAttack(note, Tone.now());
         this.musicEditor.onNewNote(recordEntry(note, "start"));
+        this.live.onRecordEntry(recordEntry(note, "start"));
       }
     } else if (upOrDown === "up") {
       if (/^beat$/.test(assignedKeyFunction)) {
@@ -121,6 +123,7 @@ class PlaygroundPage extends React.Component {
       } else {
         synth.triggerRelease(note, Tone.now());
         this.musicEditor.onNewNote(recordEntry(note, "end"));
+        this.live.onRecordEntry(recordEntry(note, "end"));
       }
     } else {
       console.error("Unknown upOrDown:", upOrDown);
@@ -130,7 +133,7 @@ class PlaygroundPage extends React.Component {
   render() {
     return (
       <div className="playArea">
-        <Live />
+        <Live ref={(ref) => (this.live = ref)} />
         <MusicEditor
           enableEditing={true}
           ref={(ref) => (this.musicEditor = ref)}

@@ -70,7 +70,7 @@ export default class Live extends React.Component {
   goLive = () => {
     network(
       "mutation",
-      `startLiveStream(code: "${this.state.peerId}")`,
+      `startLiveStream(code: "${this.peer.id}")`,
       `user
       code`,
       this.context.getToken()
@@ -112,7 +112,9 @@ export default class Live extends React.Component {
         <div>
           {
             this.state.connectedCount > 0 ?
-              `${this.state.connectedCount} people are listening` :
+              this.state.connectedCount === 1 ?
+                `${this.state.connectedCount} people is listening` :
+                `${this.state.connectedCount} people are listening` :
               `No one is listening`
           }
         </div>

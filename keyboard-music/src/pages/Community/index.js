@@ -5,8 +5,11 @@ import AuthContext from "../../context/auth-context";
 import { SuitHeart, SuitHeartFill } from 'react-bootstrap-icons';
 
 import "./index.css";
+import withRouter from "../../helpers/withRouter";
+import { Navigate } from "react-router-dom";
 
 class CommunityPage extends Component {
+  static contextType = AuthContext;
   state = {
     records: [],
     page: 1,
@@ -15,7 +18,19 @@ class CommunityPage extends Component {
     alert_message: ""
   };
 
-  static contextType = AuthContext;
+  componentDidMount = () => {
+    this.getPublishedRecords();
+    if (this.context.getToken()) {
+      this.getUserUpvotes();
+    }
+
+    this.getLiveStreams();
+    setInterval(this.getLiveStreams, 5000);
+  }
+
+  componentWillUnmount = () => {
+    clearInterval(this.getLiveStreams);
+  }
 
   getPublishedRecords = () => {
     network(
@@ -98,51 +113,44 @@ class CommunityPage extends Component {
     })
   }
 
-  getLiveByUser = (email) => {
-    network(
-      "query",
-      `getLiveByUser(user: "${email}")`,
-      `code`,
-      this.context.getToken()
-    ).then(res => {
-      if (res.data) {
-        console.log(res.data.getLiveByUser.code);
-      }
-    })
-  }
-
-  componentDidMount = () => {
-    this.getPublishedRecords();
-    if (this.context.getToken()) {
-      this.getUserUpvotes();
-    }
-  }
-
   render() {
+    if (this.state.redirectUser) {
+      return (
+        <Navigate
+          to="/view"
+          state={{ liveAuthorId: this.state.redirectUser }}
+        />
+      );
+    }
+
     return (
-    <div>
-      {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({alert_message: ""})}>{this.state.alert_message}</Alert>}
-      <div className="me">
-        {this.state.records.map((record, index) => {
-          return (
-            <Card key={index} className="card">
-              <Card.Title className="card-title">{record.title}</Card.Title>
-              <Card.Text>Author: {record.author}</Card.Text>
-              <Button className="btn" variant="dark">Play Music</Button>
-              <div className="heart-div">
-                {record.upvote}
-                {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
-                {!this.state.upvotes.includes(record._id) && <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />}
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-      <Button onClick={this.getLiveStreams}>Get livestreams</Button>
-      <Button onClick={() => this.getLiveByUser('minqi0303@gmail.com')}>Get live code of minqi0303@gmail.com</Button>
-    </div>
+      <div>
+        {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })}>{this.state.alert_message}</Alert>}
+        <div className="me">
+          {this.state.records.map((record, index) => {
+            return (
+              <Card key={index} className="card">
+                <Card.Title className="card-title">{record.title}</Card.Title>
+                <Card.Text>Author: {record.author}</Card.Text>
+                <Button className="btn" variant="dark">Play Music</Button>
+                <div className="heart-div">
+                  {record.upvote}
+                  {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
+                  {!this.state.upvotes.includes(record._id) && <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+        {this.state.livestreams.map((livestream, index) => (
+          <Button key={index} onClick={() => this.setState({ redirectUser: livestream.user })}>
+            <h4>{livestream.user}</h4>
+          </Button>
+        ))
+        }
+      </div >
     );
   }
 }
 
-export default CommunityPage;
+export default withRouter(CommunityPage);
