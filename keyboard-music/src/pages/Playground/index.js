@@ -21,6 +21,7 @@ import {
 } from "react-bootstrap";
 import beatFile from "../../static/music/beat/beat1.wav";
 import withRouter from "../../helpers/withRouter";
+import Live from './Live';
 
 const beatSound = new Audio(beatFile);
 const synth = new Tone.PolySynth().toDestination();
@@ -127,6 +128,7 @@ class PlaygroundPage extends React.Component {
   render() {
     return (
       <div className="playArea">
+        <Live />
         <MusicEditor
           enableEditing={true}
           ref={(ref) => (this.musicEditor = ref)}
