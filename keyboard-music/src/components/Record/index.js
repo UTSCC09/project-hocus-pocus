@@ -24,7 +24,6 @@ export default function Record({
       const targetPosition = currentTime * ZOOM_FACTOR;
       if (scrollToCurrentTime) {
         scrollView.current.scroll({ left: targetPosition - 200 });
-        console.log(targetPosition);
       }
     }
   }, [currentTime, scrollToCurrentTime]);
@@ -68,7 +67,7 @@ export default function Record({
                     }}
                   >
                     <div className="sound-text">
-                      {sound.note} {sound.instrument}
+                      {sound.note}
                     </div>
                   </div>
                 );

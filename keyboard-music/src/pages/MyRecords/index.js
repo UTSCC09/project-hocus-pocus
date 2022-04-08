@@ -81,7 +81,7 @@ class MyRecordsPage extends Component {
 
   render() {
     if (this.state.redirect) {
-      return <Navigate to={this.state.redirect} state={{recordId: this.state.redirect_id}} />
+      return <Navigate to={this.state.redirect} state={{ recordId: this.state.redirect_id }} />
     }
 
     return (
@@ -96,24 +96,24 @@ class MyRecordsPage extends Component {
                 {!value.published && <Card.Text>This record is not published.</Card.Text>}
 
                 <div className="button-group">
-                  <Button 
-                    variant="dark" 
+                  <Button
+                    variant="dark"
                     onClick={() => this.setState({ redirect: '/playground', redirect_id: value._id })}
                   >
-                      Modify
+                    Modify
                   </Button>
                   <Button variant="dark">Play</Button>
                 </div>
 
                 <div className="button-group">
-                  <Button 
-                    variant="dark" 
-                    onClick={() => {value.published ? this.unpublishRecord(value._id) : this.publishRecord(value._id)}}
+                  <Button
+                    variant="dark"
+                    onClick={() => { value.published ? this.unpublishRecord(value._id) : this.publishRecord(value._id) }}
                   >
-                    { value.published ? 'Unpublish' : 'Publish' }
+                    {value.published ? 'Unpublish' : 'Publish'}
                   </Button>
-                  <Button 
-                    variant="danger" 
+                  <Button
+                    variant="danger"
                     onClick={() => this.deleteRecord(value._id)}
                   >
                     Delete
@@ -121,7 +121,7 @@ class MyRecordsPage extends Component {
                 </div>
                 <div className="heart-div">
                   {value.upvote}
-                  <SuitHeartFill className="heart"/>
+                  <SuitHeartFill className="heart" />
                 </div>
               </Card.Body>
             </Card>

@@ -24,12 +24,10 @@
 
 .sound-text {
   position: absolute;
-  left: -10px;
-  width: max(100px, 100%);
+  width: 100%;
   text-align: center;
   z-index: 2;
   height: 100%;
-  opacity: 0;
   color: white;
 }
 

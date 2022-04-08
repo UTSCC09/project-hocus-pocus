@@ -41,6 +41,7 @@ export default class PlaygroundPage extends React.Component {
 
     if (/^SPN\d$/.test(assignedKeyFunction)) {
       this.setState({ SPN: parseInt(assignedKeyFunction.slice(-1)) });
+      // TODO(Yifei): releaseAll
     }
 
     const note = checkAndStandardizeMusicKeyFunctionName(assignedKeyFunction, this.state.SPN);

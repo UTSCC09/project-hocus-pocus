@@ -1,7 +1,7 @@
 import React from "react";
 import "./musicEditor.css";
 import * as Tone from "tone";
-import { Button, ButtonGroup, Dropdown, DropdownButton, FormControl, InputGroup } from "react-bootstrap";
+import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
@@ -10,6 +10,8 @@ const synth = new Tone.PolySynth().toDestination();
 const UPDATE_INTERVAL_MS = 1;
 
 export default class MusicEditor extends React.Component {
+  static contextType = AuthContext;
+
   state = {
     isRecording: false,
     currentTime: 0,
@@ -102,6 +104,10 @@ export default class MusicEditor extends React.Component {
     return soundDetails;
   }
 
+  save = () => {
+    saveRecord(this.state.currentRecord, prompt('Enter a name for this record'), this.context.getToken());
+  }
+
   render() {
     return (
       <div className="musicEditor">
@@ -111,6 +117,7 @@ export default class MusicEditor extends React.Component {
           <Button onClick={this.reset}>Reset</Button>
           <Button onClick={this.pause}>Pause</Button>
           <Button onClick={this.play}>Play</Button>
+          <Button onClick={this.save}>Save</Button>
           <span>{formatTime(this.state.currentTime)}</span>
         </div>
         <div className="editor">
@@ -126,7 +133,7 @@ export default class MusicEditor extends React.Component {
         <div>
           {
             // TODO: Remove this
-            null && (
+            this.selectedSoundDetails && (
               <InputGroup>
                 <InputGroup.Text>Note</InputGroup.Text>
                 <DropdownButton title={'Note: ' + this.selectedSoundDetails.sound.note}>
