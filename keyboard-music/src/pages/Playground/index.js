@@ -8,10 +8,13 @@ import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
 import Peer from "peerjs";
 import { Form } from "react-bootstrap";
+import  { Navigate } from 'react-router-dom'
+import AuthContext from "../../context/auth-context";
 
 const synth = new Tone.PolySynth().toDestination();
 
 const PlaygroundPage = (props) => {
+  const context = React.useContext(AuthContext);
   const [SPN, setSPN] = useState(4);
   const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
   const [startTime, setStartTime] = useState(null);
@@ -200,6 +203,10 @@ const PlaygroundPage = (props) => {
     peerRef.on("close", console.log);
     peerRef.on("disconnected", console.log);
   }, [keyDownFunction, peerRef]);
+
+  if (!context.getToken()) {
+    return <Navigate to='/auth' />
+  }
 
   return (
     <Split

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Peer from 'peerjs';
+import AuthContext from "../../context/auth-context";
+import { Navigate } from "react-router-dom";
 
 class MePage extends Component {
   peer = new Peer({
@@ -13,9 +15,17 @@ class MePage extends Component {
     connectionStatus: 'not connected',
     peerId: null,
     received: '',
+    redirect: null,
   }
 
+  static contextType = AuthContext;
+
   componentDidMount() {
+    if (!this.context.getToken()) {
+      this.setState({ redirect: '/auth' });
+      return;
+    }
+
     this.peer.on('open', (id) => {
       console.log(id);
       this.setState({
@@ -66,6 +76,10 @@ class MePage extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Navigate to={this.state.redirect} />
+    }
+
     return (
       <div>
         <h1>Me</h1>

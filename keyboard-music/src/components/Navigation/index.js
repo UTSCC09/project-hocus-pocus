@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Container, Alert } from "react-bootstrap";
+import { Navbar, Nav, Container } from "react-bootstrap";
 
 import AuthContext from "../../context/auth-context";
 
@@ -18,25 +18,34 @@ const Navigation = (props) => {
             <Nav.Link href="/community" eventKey="community" active={currentURL === '/community'}>
               Community
             </Nav.Link>
+            
             {/* account related info */}
-            <Nav.Link href="/me" eventKey="me" active={currentURL === '/me'}>
-              Me
-            </Nav.Link>
+            {context.getToken() && (
+              <Nav.Link href="/me" eventKey="me" active={currentURL === '/me'}>
+                Me
+              </Nav.Link>
+            )}
+            
             {/* perform and create music */}
-            <Nav.Link href="/playground" eventKey="playground" active={currentURL === '/playground'}>
-              Playground
-            </Nav.Link>
-            <Nav.Link href="/my_records" eventKey="my_records" active={currentURL === '/my_records'}>
-              My Records
-            </Nav.Link>
+            {context.getToken() && (
+              <Nav.Link href="/playground" eventKey="playground" active={currentURL === '/playground'}>
+                Playground
+              </Nav.Link>
+            )}
+            
+            {context.getToken() && (
+              <Nav.Link href="/my_records" eventKey="my_records" active={currentURL === '/my_records'}>
+                My Records
+              </Nav.Link>
+            )}
           </Nav>
           <Nav>
-            {!context.token && (
+            {!context.getToken() && (
               <Nav.Link href="/auth" active={currentURL === '/auth'}>
                 Login / Register
               </Nav.Link>
             )}
-            {context.token && (
+            {context.getToken() && (
               <Nav.Link href="/auth" onClick={context.logout}>
                 Logout
               </Nav.Link>

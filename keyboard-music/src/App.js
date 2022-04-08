@@ -36,13 +36,21 @@ class App extends Component {
     window.sessionStorage.clear();
   };
 
+  getToken = () => {
+    return this.state.token || window.sessionStorage.getItem("token");
+  }
+
+  getUserId = () => {
+    return this.state.userId || window.sessionStorage.getItem("userId");
+  }
+
   render() {
     return (
       <BrowserRouter>
         <AuthContext.Provider
           value={{
-            token: this.state.token,
-            userId: this.state.userId,
+            getToken: this.getToken,
+            getUserId: this.getUserId,
             login: this.login,
             logout: this.logout,
           }}

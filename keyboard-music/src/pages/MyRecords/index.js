@@ -35,7 +35,7 @@ class MyRecordsPage extends Component {
       "mutation",
       `publishRecord(recordId: "${recordId}")`,
       "success",
-      this.context.token
+      this.context.getToken()
     ).then(res => {
       if (res.data) {
         this.getCurrentUserRecord();
@@ -48,7 +48,7 @@ class MyRecordsPage extends Component {
       "mutation",
       `unpublishRecord(recordId: "${recordId}")`,
       "success",
-      this.context.token
+      this.context.getToken()
     ).then(res => {
       if (res.data) {
         this.getCurrentUserRecord();
@@ -61,7 +61,7 @@ class MyRecordsPage extends Component {
       "mutation",
       `deleteRecord(recordId: "${recordId}")`,
       "success",
-      this.context.token
+      this.context.getToken()
     ).then(res => {
       if (res.data) {
         this.getCurrentUserRecord();
@@ -70,6 +70,10 @@ class MyRecordsPage extends Component {
   }
 
   componentDidMount = () => {
+    if (!this.context.getToken()) {
+      this.setState({ redirect: '/auth' });
+      return;
+    }
     this.getCurrentUserRecord();
   }
 

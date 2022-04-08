@@ -7,7 +7,7 @@
  *       `userId
  *        token
  *        tokenExpiration`,
- *       this.context.token
+ *       this.context.getToken()
  *    ).then((response) => {
  *      console.log(response.data.login.userId);
  *      console.log(response.data.login.token);

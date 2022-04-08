@@ -34,7 +34,7 @@ const MusicEditor = (props) => {
       `_id
       author
       published`,
-      context.token
+      context.getToken()
     ).then((res) => {
       if (res.data) {
         console.log(res.data);

@@ -17,6 +17,12 @@ class LoginPage extends Component {
 
   static contextType = AuthContext;
 
+  componentDidMount() {
+    if (this.context.getToken()) {
+      this.setState({ redirect: '/community' });
+    }
+  }
+
   signUp = (e) => {
     e.preventDefault();
 
