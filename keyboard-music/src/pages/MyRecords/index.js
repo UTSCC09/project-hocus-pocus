@@ -117,7 +117,7 @@ class MyRecordsPage extends Component {
                       this.checkRecord(value._id);
                     }}
                   >
-                    Check
+                    View
                   </Button>
                 </div>
 

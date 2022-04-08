@@ -18,21 +18,21 @@ const Navigation = (props) => {
             <Nav.Link href="/community" eventKey="community" active={currentURL === '/community'}>
               Community
             </Nav.Link>
-            
+
             {/* account related info */}
             {context.getToken() && (
               <Nav.Link href="/me" eventKey="me" active={currentURL === '/me'}>
                 Me
               </Nav.Link>
             )}
-            
+
             {/* perform and create music */}
             {context.getToken() && (
               <Nav.Link href="/playground" eventKey="playground" active={currentURL === '/playground'}>
                 Playground
               </Nav.Link>
             )}
-            
+
             {context.getToken() && (
               <Nav.Link href="/my_records" eventKey="my_records" active={currentURL === '/my_records'}>
                 My Records

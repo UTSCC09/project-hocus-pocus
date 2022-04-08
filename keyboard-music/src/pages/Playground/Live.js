@@ -87,7 +87,7 @@ export default class Live extends React.Component {
   stopLive = () => {
     network(
       "mutation",
-      `endLiveStream(code: "${this.state.peerId}")`,
+      `endLiveStream`,
       `success`,
       this.context.getToken()
     ).then((res) => {
