@@ -5,16 +5,12 @@ import { Button, FormControl, InputGroup, ButtonGroup } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
-import { ThermometerSun } from "react-bootstrap-icons";
 
 const synth = new Tone.PolySynth().toDestination();
 const UPDATE_INTERVAL_MS = 1;
 
 export default class MusicEditor extends React.Component {
   static contextType = AuthContext;
-  componentDidMount = () => {
-    console.log("ASD", this.props);
-  };
 
   state = {
     isPlaying: false,
