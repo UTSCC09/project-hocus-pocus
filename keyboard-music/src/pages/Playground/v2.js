@@ -16,9 +16,17 @@ export default class PlaygroundPage extends React.Component {
     SPN: 4,
   }
 
+  handleKeyUp = (e) => this.handleKeyUpOrDown('up', e);
+  handleKeyDown = (e) => this.handleKeyUpOrDown('down', e);
+
   componentDidMount() {
-    document.addEventListener("keyup", (e) => this.handleKeyUpOrDown('up', e));
-    document.addEventListener("keydown", (e) => this.handleKeyUpOrDown('down', e));
+    document.addEventListener("keyup", this.handleKeyUp);
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.handleKeyUp);
+    document.removeEventListener("keydown", this.handleKeyDown);
   }
 
   handleKeyUpOrDown = (upOrDown, e) => {
@@ -33,7 +41,7 @@ export default class PlaygroundPage extends React.Component {
 
     const action = checkAndStandardizeMusicKeyFunctionName(assignedKeyFunction, this.state.SPN);
     if (!action) {
-      console.log('Ignoring keydown event for key:', e.code);
+      console.log('Ignoring key event for key:', e.code);
     }
 
     if (upOrDown === "down") {
