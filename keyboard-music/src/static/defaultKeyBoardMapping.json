@@ -53,7 +53,7 @@
   "KeyL": { "function": null, "symbol": "L" },
   "Semicolon": { "function": null, "symbol": ";" },
   "Quote": { "function": null, "symbol": "'" },
-  "Enter": { "function": "newline", "symbol": "Return" },
+  "Enter": { "function": null, "symbol": "Return" },
 
   "ShiftLeft": {
     "function": null,

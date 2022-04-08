@@ -1,7 +1,13 @@
 import React from "react";
 import "./musicEditor.css";
 import * as Tone from "tone";
-import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from "react-bootstrap";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  FormControl,
+  InputGroup,
+} from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import Record from "../../components/Record";
@@ -17,7 +23,7 @@ export default class MusicEditor extends React.Component {
     currentTime: 0,
     currentRecord: [],
     selectedSound: null,
-  }
+  };
 
   triggered = new Set();
 
@@ -28,7 +34,7 @@ export default class MusicEditor extends React.Component {
       currentRecord: [],
       selectedSound: null,
     });
-  }
+  };
 
   startRecording = () => {
     this.setState({
@@ -44,7 +50,7 @@ export default class MusicEditor extends React.Component {
         currentTime: this.state.currentTime + actualTimeElapsed,
       });
     }, UPDATE_INTERVAL_MS);
-  }
+  };
 
   stopRecording = () => {
     this.setState({
@@ -52,7 +58,7 @@ export default class MusicEditor extends React.Component {
     });
 
     clearInterval(this.clock);
-  }
+  };
 
   onNewNote = (note) => {
     if (!this.state.isRecording) return;
@@ -62,7 +68,7 @@ export default class MusicEditor extends React.Component {
     this.setState({
       currentRecord: [...this.state.currentRecord, note],
     });
-  }
+  };
 
   play = () => {
     this.prevTime = Date.now();
@@ -70,43 +76,53 @@ export default class MusicEditor extends React.Component {
     this.clock = setInterval(() => {
       const currentTimestamp = Date.now();
       const actualTimeElapsed = currentTimestamp - this.prevTime;
-      this.state.currentRecord.forEach(record => {
-        if (this.state.currentTime <= record.offset && record.offset < this.state.currentTime + actualTimeElapsed) {
-          if (record.action === 'start') {
+      this.state.currentRecord.forEach((record) => {
+        if (
+          this.state.currentTime <= record.offset &&
+          record.offset < this.state.currentTime + actualTimeElapsed
+        ) {
+          if (record.action === "start") {
             this.triggered.add(record.sound.note);
             synth.triggerAttack(record.sound.note);
-          } else if (record.action === 'end') {
+          } else if (record.action === "end") {
             this.triggered.delete(record.sound.note);
             synth.triggerRelease(record.sound.note);
           }
         }
-      })
+      });
       this.prevTime = currentTimestamp;
-      this.setState({ currentTime: this.state.currentTime + actualTimeElapsed });
+      this.setState({
+        currentTime: this.state.currentTime + actualTimeElapsed,
+      });
     }, UPDATE_INTERVAL_MS);
-  }
+  };
 
   pause = () => {
     synth.triggerRelease(Array.from(this.triggered));
     this.triggered.clear();
     clearInterval(this.clock);
-  }
+  };
 
   get selectedSoundDetails() {
     if (this.state.selectedSound === null) return null;
     const { sound, start } = this.state.selectedSound;
-    const soundDetails = this.state.currentRecord.find(note =>
-      JSON.stringify(note.sound) === JSON.stringify(sound) &&
-      note.offset === start &&
-      note.action === 'start'
+    const soundDetails = this.state.currentRecord.find(
+      (note) =>
+        JSON.stringify(note.sound) === JSON.stringify(sound) &&
+        note.offset === start &&
+        note.action === "start"
     );
     if (!soundDetails) return null;
     return soundDetails;
   }
 
   save = () => {
-    saveRecord(this.state.currentRecord, prompt('Enter a name for this record'), this.context.getToken());
-  }
+    saveRecord(
+      this.state.currentRecord,
+      prompt("Enter a name for this record"),
+      this.context.getToken()
+    );
+  };
 
   render() {
     return (
@@ -117,8 +133,9 @@ export default class MusicEditor extends React.Component {
           <Button onClick={this.reset}>Reset</Button>
           <Button onClick={this.pause}>Pause</Button>
           <Button onClick={this.play}>Play</Button>
-          <Button onClick={this.save}>Save</Button>
           <span>{formatTime(this.state.currentTime)}</span>
+
+          <Button onClick={this.save}>Save</Button>
         </div>
         <div className="editor">
           <Record
@@ -136,7 +153,9 @@ export default class MusicEditor extends React.Component {
             this.selectedSoundDetails && (
               <InputGroup>
                 <InputGroup.Text>Note</InputGroup.Text>
-                <DropdownButton title={'Note: ' + this.selectedSoundDetails.sound.note}>
+                <DropdownButton
+                  title={"Note: " + this.selectedSoundDetails.sound.note}
+                >
                   <Dropdown.Item href="#">Action</Dropdown.Item>
                   <Dropdown.Item href="#">Another action</Dropdown.Item>
                   <Dropdown.Item href="#">Something else here</Dropdown.Item>
@@ -144,7 +163,10 @@ export default class MusicEditor extends React.Component {
                   <Dropdown.Item href="#">Separated link</Dropdown.Item>
                 </DropdownButton>
                 <InputGroup.Text>Start Time</InputGroup.Text>
-                <FormControl aria-label="Start" value={this.selectedSoundDetails.start} />
+                <FormControl
+                  aria-label="Start"
+                  value={this.selectedSoundDetails.start}
+                />
                 <InputGroup.Text>Duration</InputGroup.Text>
                 <FormControl aria-label="Duration" />
                 <Button variant="primary">Save</Button>
@@ -157,7 +179,6 @@ export default class MusicEditor extends React.Component {
     );
   }
 }
-
 
 function formatTime(ms) {
   // mm:ss.t
@@ -173,7 +194,6 @@ function formatTime(ms) {
     return n < 10 ? `0${n}` : n;
   }
 }
-
 
 function saveRecord(record, title, token) {
   network(
@@ -194,5 +214,5 @@ function saveRecord(record, title, token) {
     } else {
       // TODO: handle error
     }
-  })
+  });
 }

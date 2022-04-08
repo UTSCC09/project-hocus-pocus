@@ -8,20 +8,24 @@ import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
 import Peer from "peerjs";
 import { Form } from "react-bootstrap";
-import { Navigate } from 'react-router-dom'
+import { Navigate } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
+import beatFile from "../../static/music/beat/beat1.wav";
 
+const beatSound = new Audio(beatFile);
 const synth = new Tone.PolySynth().toDestination();
 
 export default class PlaygroundPage extends React.Component {
   state = {
     SPN: 4,
-  }
+    isBeating: false,
+    BPM: 60,
+  };
 
   musicEditor = null;
 
-  handleKeyUp = (e) => this.handleKeyUpOrDown('up', e);
-  handleKeyDown = (e) => this.handleKeyUpOrDown('down', e);
+  handleKeyUp = (e) => this.handleKeyUpOrDown("up", e);
+  handleKeyDown = (e) => this.handleKeyUpOrDown("down", e);
 
   componentDidMount() {
     document.addEventListener("keyup", this.handleKeyUp);
@@ -38,40 +42,70 @@ export default class PlaygroundPage extends React.Component {
 
     const keyCode = e.code;
     const assignedKeyFunction = keyMap[keyCode]?.function;
-
-    if (/^SPN\d$/.test(assignedKeyFunction)) {
-      this.setState({ SPN: parseInt(assignedKeyFunction.slice(-1)) });
-      // TODO(Yifei): releaseAll
-    }
-
-    const note = checkAndStandardizeMusicKeyFunctionName(assignedKeyFunction, this.state.SPN);
-    if (!note) {
-      console.log('Ignoring key event for key:', e.code);
-    }
+    const note = checkAndStandardizeMusicKeyFunctionName(
+      assignedKeyFunction,
+      this.state.SPN
+    );
 
     if (upOrDown === "down") {
-      playKeyPressedAnimation(keyCode);
-      if (note) {
-        synth.triggerAttack(note, Tone.now());
-        this.musicEditor.onNewNote(recordEntry(note, 'start'));
-      }
-    } else if (upOrDown === "up") {
-      removeKeyPressedAnimation(keyCode);
-      if (note) {
-        synth.triggerRelease(note, Tone.now());
-        this.musicEditor.onNewNote(recordEntry(note, 'end'));
+      // FUNCTIONS OTHER THAN MUSIC NOTES
+      if (/^SPN\d$/.test(assignedKeyFunction)) {
+        this.setState({ SPN: parseInt(assignedKeyFunction.slice(-1)) });
+        // TODO(Yifei): releaseAll
+        return;
       }
 
+      if (/^beat$/.test(assignedKeyFunction)) {
+        const beatInterval = (1000 * 60) / this.state.BPM;
+        console.log(this.state.isBeating);
+        if (!this.state.isBeating) {
+          this.clock = setInterval(() => {
+            playKeyPressedAnimation(keyCode);
+            beatSound.play();
+            setTimeout(() => {
+              removeKeyPressedAnimation(keyCode);
+            }, 0.5 * beatInterval);
+          }, beatInterval);
+          this.setState({ isBeating: true });
+        } else {
+          clearInterval(this.clock);
+          this.setState({ isBeating: false });
+        }
+        return;
+      }
+
+      // MUSIC NOTES
+      playKeyPressedAnimation(keyCode);
+
+      if (!note) {
+        console.log("Ignoring key event for key:", e.code);
+      } else {
+        synth.triggerAttack(note, Tone.now());
+        this.musicEditor.onNewNote(recordEntry(note, "start"));
+      }
+    } else if (upOrDown === "up") {
+      if (/^beat$/.test(assignedKeyFunction)) {
+        return;
+      }
+      removeKeyPressedAnimation(keyCode);
+      if (!note) {
+        console.log("Ignoring key event for key:", e.code);
+      } else {
+        synth.triggerRelease(note, Tone.now());
+        this.musicEditor.onNewNote(recordEntry(note, "end"));
+      }
     } else {
-      console.error('Unknown upOrDown:', upOrDown);
+      console.error("Unknown upOrDown:", upOrDown);
     }
   };
 
   render() {
-    return (<>
-      <Keyboard SPN={this.state.SPN} />
-      <MusicEditor ref={(ref) => this.musicEditor = ref} />
-    </>);
+    return (
+      <>
+        <Keyboard SPN={this.state.SPN} />
+        <MusicEditor ref={(ref) => (this.musicEditor = ref)} />
+      </>
+    );
   }
 }
 
@@ -84,7 +118,6 @@ function recordEntry(note, action) {
     action,
   };
 }
-
 
 function playKeyPressedAnimation(code) {
   const pressedKey = document.querySelector("." + code);
