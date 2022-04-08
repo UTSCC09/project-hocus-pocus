@@ -110,16 +110,18 @@ export default class PlaygroundPage extends React.Component {
     return (
       <div className="playArea">
         <MusicEditor ref={(ref) => (this.musicEditor = ref)} />
-        <InputGroup className="beater w-25">
-          <InputGroup.Text>BPM</InputGroup.Text>
-          <FormControl
-            aria-label="BPM"
-            value={this.state.BPM}
-            onChange={(e) => {
-              this.setState({ BPM: e.target.value });
-            }}
-          />
-        </InputGroup>
+        <div>
+          <InputGroup className="beater w-25">
+            <InputGroup.Text>BPM</InputGroup.Text>
+            <FormControl
+              aria-label="BPM"
+              value={this.state.BPM}
+              onChange={(e) => {
+                this.setState({ BPM: e.target.value });
+              }}
+            />
+          </InputGroup>
+        </div>
         <Keyboard SPN={this.state.SPN} />
       </div>
     );
