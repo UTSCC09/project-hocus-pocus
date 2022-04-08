@@ -40,5 +40,10 @@ module.exports = {
   getLiveStreams: async (args, req) => {
     const livestreams = await Livestream.find({ in_progress: true });
     return livestreams;
+  },
+
+  getLiveByUser: async (args, req) => {
+    const livestream = await Livestream.findOne({ user: args.user, in_progress: true });
+    return livestream;
   }
 }
