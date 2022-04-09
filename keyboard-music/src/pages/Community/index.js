@@ -44,7 +44,7 @@ class CommunityPage extends Component {
     ).then((res) => {
       if (res.data) {
         if (res.data.getPublishedRecordsByPage.length === 0) {
-          this.setState({ page: this.state.page-1 });
+          this.setState({ page: this.state.page - 1 });
         } else {
           this.setState({ records: res.data.getPublishedRecordsByPage });
         }
@@ -122,7 +122,7 @@ class CommunityPage extends Component {
 
   onRightClicked = () => {
     if (this.state.records.length < 8) return;
-    this.setState({ page: this.state.page+1 }, () => this.getPublishedRecords());
+    this.setState({ page: this.state.page + 1 }, () => this.getPublishedRecords());
   }
 
   render() {
@@ -147,6 +147,7 @@ class CommunityPage extends Component {
     return (
       <div className="me-page">
         {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })} dismissible>{this.state.alert_message}</Alert>}
+        <div class="heading">Published Records</div>
         <div className="me">
           {this.state.records.map((record, index) => {
             return (
@@ -154,10 +155,14 @@ class CommunityPage extends Component {
                 <Card.Title className="card-title">{record.title}</Card.Title>
                 <Card.Text>Author: {record.author}</Card.Text>
                 <Button className="btn" variant="dark" onClick={() => { this.setState({ redirectRecord: record._id }) }}>Play Music</Button>
-                <div className="heart-div">
+                <div className="heart-container">
                   {record.upvote}
-                  {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
-                  {!this.state.upvotes.includes(record._id) && <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />}
+                  {
+                    this.state.upvotes.includes(record._id) ?
+                      <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />
+                      : <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />
+                  }
+
                 </div>
               </Card>
             );
@@ -167,12 +172,19 @@ class CommunityPage extends Component {
           <ArrowLeftCircle className="arrow" onClick={this.onLeftClicked} />
           <ArrowRightCircle className="arrow" onClick={this.onRightClicked} />
         </div>
-        {this.state.livestreams.map((livestream, index) => (
-          <Button key={index} onClick={() => this.setState({ redirectUser: livestream.user })}>
-            <h4>{livestream.user}</h4>
-          </Button>
-        ))
+        <div class="heading">Active Livestreams</div>
+        {
+          this.state.livestreams.length === 0 ?
+            <Alert variant="info">No active livestreams</Alert>
+            : null
         }
+        <div className="livestream-container">
+          {this.state.livestreams.map((livestream, index) => (
+            <Button key={index} onClick={() => this.setState({ redirectUser: livestream.user })}>
+              User {livestream.user}
+            </Button>
+          ))}
+        </div>
       </div >
     );
   }

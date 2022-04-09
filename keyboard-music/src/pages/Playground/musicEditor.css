@@ -1,11 +1,9 @@
 .musicEditor {
-  /* background-color: rgb(0, 0, 0); */
-  margin-top: 5px;
+  margin: 5px 30px 120px 30px;
   position: relative;
   z-index: 1;
   height: 200px;
   overflow: visible;
-  margin-bottom: 120px;
 }
 
 .toolkit * {
@@ -24,5 +22,5 @@
   font-size: x-large;
   font-weight: 700;
   color: black;
-  background-color: rgba(250, 234, 214, 0.1);
+  background-color: rgba(250, 234, 214, 0.3);
 }

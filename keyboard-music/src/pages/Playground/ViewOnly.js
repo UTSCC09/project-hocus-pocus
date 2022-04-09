@@ -1,24 +1,12 @@
-import React, { useEffect, useState, useCallback } from "react";
-import Split from "react-split";
+import React from "react";
 import * as Tone from "tone";
 import "./index.css";
-import Keyboard from "./Keyboard";
-import Timer from "./Timer";
 import MusicEditor from "./MusicEditor";
-import keyMap from "../../static/defaultKeyBoardMapping";
 import Peer from "peerjs";
-import { ButtonGroup, Form } from "react-bootstrap";
-import { Navigate } from "react-router-dom";
+import { ButtonGroup, Button } from "react-bootstrap";
 import AuthContext from "../../context/auth-context";
 import network from "../../helpers/network";
 
-import {
-  Button,
-  Dropdown,
-  DropdownButton,
-  FormControl,
-  InputGroup,
-} from "react-bootstrap";
 import withRouter from "../../helpers/withRouter";
 
 const synth = new Tone.PolySynth().toDestination();

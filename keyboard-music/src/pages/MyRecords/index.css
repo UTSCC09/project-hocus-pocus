@@ -6,13 +6,11 @@
 }
 
 .card {
-  width: 18rem;
-  height: 15rem;
   color: black;
-  margin: 20px 10px;
-  box-shadow: 5px 5px 5px black;
-}
-
-.button-group {
-  margin: 5px;
+  /* https://getcssscan.com/css-box-shadow-examples */
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  height: fit-content;
+  background: url("../../static/background/music.png");
+  background-size: 100%;
+  background-position-y: 20px;
 }

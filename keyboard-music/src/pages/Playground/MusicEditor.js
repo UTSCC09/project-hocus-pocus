@@ -35,7 +35,7 @@ export default class MusicEditor extends React.Component {
 
   setRecordName = (recordName) => {
     this.setState({ recordName });
-  }
+  };
 
   reset = () => {
     this.triggeredForPlay = new Set();
@@ -263,38 +263,42 @@ export default class MusicEditor extends React.Component {
     return (
       <div className="musicEditor">
         <div className="toolkit">
-          <ButtonGroup className="recordingTools">
-            {this.props.enableEditing ? (
-              <>
-                <Button
-                  disabled={this.state.isPlaying}
-                  onClick={
-                    this.state.isRecording
-                      ? this.stopRecording
-                      : this.startRecording
-                  }
-                >
-                  {this.state.isRecording
-                    ? "Stop Recording"
-                    : "Start Recording"}
-                </Button>
-              </>
-            ) : null}
-            <Button
-              variant="success"
-              disabled={this.state.isRecording}
-              onClick={this.state.isPlaying ? this.pause : this.play}
-            >
-              {this.state.isPlaying ? "Pause" : "Play"}
-            </Button>
-            <Button onClick={() => this.zoom(+0.1)}>Zoom In</Button>
-            <Button onClick={() => this.zoom(-0.1)}>Zoom Out</Button>
-          </ButtonGroup>
+          <div>
+            <ButtonGroup className="recordingTools">
+              {this.props.enableEditing ? (
+                <>
+                  <Button
+                    disabled={this.state.isPlaying}
+                    onClick={
+                      this.state.isRecording
+                        ? this.stopRecording
+                        : this.startRecording
+                    }
+                  >
+                    {this.state.isRecording
+                      ? "Stop Recording"
+                      : "Start Recording"}
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                variant="success"
+                disabled={this.state.isRecording}
+                onClick={this.state.isPlaying ? this.pause : this.play}
+              >
+                {this.state.isPlaying ? "Pause" : "Play"}
+              </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button onClick={() => this.zoom(+0.1)}>Zoom In</Button>
+              <Button onClick={() => this.zoom(-0.1)}>Zoom Out</Button>
+            </ButtonGroup>
+          </div>
           <div className="timeDisplayer">
             {formatTime(this.state.currentTime)}
           </div>
           <div className="generalTools">
-            {this.props.enableEditing ?
+            {this.props.enableEditing ? (
               <>
                 <InputGroup>
                   <InputGroup.Text>Record Name</InputGroup.Text>
@@ -315,7 +319,7 @@ export default class MusicEditor extends React.Component {
                   </Button>
                 </InputGroup>
               </>
-              : null}
+            ) : null}
           </div>
         </div>
         <div className="editor">
@@ -413,12 +417,10 @@ class NoteEditor extends React.Component {
             this.setState({ duration: parseInt(e.target.value) })
           }
         />
-        <Button variant="primary" onClick={() => this.validateAndSubmit()}>
+        <Button variant="success" onClick={() => this.validateAndSubmit()}>
           {this.state.creating ? "Create" : "Save"}
         </Button>
-        <Button variant="danger" onClick={() => this.delete()}>
-          Delete
-        </Button>
+        <Button onClick={() => this.delete()}>Delete</Button>
       </InputGroup>
     );
   }
@@ -454,9 +456,9 @@ function saveRecord(record, title, token) {
     token
   ).then((res) => {
     if (res.data) {
-      console.log(res.data);
+      alert("Record saved!");
     } else {
-      // TODO: handle error
+      alert("Error: " + res);
     }
   });
 }

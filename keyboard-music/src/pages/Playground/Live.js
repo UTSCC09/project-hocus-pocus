@@ -1,9 +1,9 @@
 import React from "react";
 import Peer from "peerjs";
 import AuthContext from "../../context/auth-context";
-import { Navigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import network from "../../helpers/network";
+import "./live.css";
 
 export default class Live extends React.Component {
   static contextType = AuthContext;
@@ -12,15 +12,15 @@ export default class Live extends React.Component {
     isLive: false,
     isReady: false,
     connectedCount: 0,
-  }
+  };
 
   connectedPeers = [];
 
   onRecordEntry = (recordEntry) => {
     for (let peer of this.connectedPeers) {
-      peer.send({ 'type': 'recordEntry', recordEntry });
+      peer.send({ type: "recordEntry", recordEntry });
     }
-  }
+  };
 
   componentDidMount() {
     this.peer = new Peer({
@@ -30,21 +30,20 @@ export default class Live extends React.Component {
     });
 
     this.peer.on("open", (id) => {
-      console.log(id);
       this.setState({ isReady: true });
     });
 
-    this.peer.on('connection', (connection) => {
+    this.peer.on("connection", (connection) => {
       this.connectedPeers.push(connection);
-      this.setState({ 'connectedCount': this.connectedPeers.length });
+      this.setState({ connectedCount: this.connectedPeers.length });
 
-      connection.on('data', (data) => {
-        console.log('Possible chat data', data);
-      });
+      connection.on("data", (data) => { });
 
-      connection.on('close', () => {
-        this.connectedPeers = this.connectedPeers.filter((peer) => peer !== connection);
-        this.setState({ 'connectedCount': this.connectedPeers.length });
+      connection.on("close", () => {
+        this.connectedPeers = this.connectedPeers.filter(
+          (peer) => peer !== connection
+        );
+        this.setState({ connectedCount: this.connectedPeers.length });
       });
     });
 
@@ -74,50 +73,55 @@ export default class Live extends React.Component {
       `user
       code`,
       this.context.getToken()
-    ).then((res) => {
-      if (res.data) {
-        console.log(res.data.startLiveStream);
-        this.setState({ isLive: true });
-      }
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
+    )
+      .then((res) => {
+        if (res.data) {
+          console.log(res.data.startLiveStream);
+          this.setState({ isLive: true });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   stopLive = () => {
-    network(
-      "mutation",
-      `endLiveStream`,
-      `success`,
-      this.context.getToken()
-    ).then((res) => {
-      if (res.data) {
-        console.log(res.data);
-        this.setState({ isLive: false });
-      }
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
+    network("mutation", `endLiveStream`, `success`, this.context.getToken())
+      .then((res) => {
+        if (res.data) {
+          this.setState({ isLive: false });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   render() {
     return (
-      <div>
+      <div style={{ margin: 30 }}>
         <Button
           disabled={!this.state.isReady}
           onClick={this.state.isLive ? this.stopLive : this.goLive}
+          className="goLiveBtn"
         >
-          {this.state.isReady ? this.state.isLive ? 'Stop Live' : 'Go Live' : 'Preparing'}
+          {this.state.isReady
+            ? this.state.isLive
+              ? "Stop Live"
+              : "Go Live"
+            : "Preparing"}
         </Button>
-        <div>
+        <span>
           {
-            this.state.connectedCount > 0 ?
-              this.state.connectedCount === 1 ?
-                `${this.state.connectedCount} people is listening` :
-                `${this.state.connectedCount} people are listening` :
-              `No one is listening`
+            !this.state.isLive ?
+              `You can go live by clicking the button.` :
+              this.state.connectedCount > 0 ?
+                this.state.connectedCount === 1 ?
+                  `${this.state.connectedCount} people is listening` :
+                  `${this.state.connectedCount} people are listening` :
+                `You are live now. People can find you in the Community tab. No one is listening`
           }
-        </div>
+        </span>
       </div>
     );
   }

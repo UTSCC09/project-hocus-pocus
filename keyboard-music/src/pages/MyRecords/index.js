@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Alert } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import "./index.css";
@@ -106,12 +106,19 @@ class MyRecordsPage extends Component {
 
     return (
       <div className="my-records-page">
+        {
+          this.state.records.length === 0 ?
+            (
+              <Alert variant="info">
+                You have no music records.
+              </Alert>
+            ) : null
+        }
         {this.state.records.map((value, index) => {
           return (
             <Card key={index} className="card">
+              <Card.Title className="card-title">{value.title}</Card.Title>
               <Card.Body>
-                <Card.Title className="card-title">{value.title}</Card.Title>
-
                 {value.published && (
                   <Card.Text>This record is published!</Card.Text>
                 )}
@@ -119,16 +126,14 @@ class MyRecordsPage extends Component {
                   <Card.Text>This record is not published.</Card.Text>
                 )}
 
-                <div className="button-group">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                   <Button variant="dark" onClick={() => { this.checkRecord(value._id) }}>
                     Edit
                   </Button>
                   <Button variant="dark" onClick={() => { this.setState({ redirectView: value._id }) }}>
                     View
                   </Button>
-                </div>
 
-                <div className="button-group">
                   <Button
                     variant="dark"
                     onClick={() => {
@@ -146,7 +151,8 @@ class MyRecordsPage extends Component {
                     Delete
                   </Button>
                 </div>
-                <div className="heart-div">
+
+                <div className="heart-container">
                   {value.upvote}
                   <SuitHeartFill className="heart" />
                 </div>
