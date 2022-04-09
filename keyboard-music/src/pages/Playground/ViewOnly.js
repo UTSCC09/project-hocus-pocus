@@ -111,7 +111,7 @@ class PlaygroundPage extends React.Component {
 
   render() {
     return (
-      <div style={{ margin: '200px 30px' }}>
+      <div style={{ margin: '200px 0' }}>
         {!this.state.isFromLive ? null :
           <div>
             <ButtonGroup>

@@ -19,13 +19,6 @@ const Navigation = (props) => {
               Community
             </Nav.Link>
 
-            {/* account related info */}
-            {context.getToken() && (
-              <Nav.Link href="/me" eventKey="me" active={currentURL === '/me'}>
-                Me
-              </Nav.Link>
-            )}
-
             {/* perform and create music */}
             {context.getToken() && (
               <Nav.Link href="/playground" eventKey="playground" active={currentURL === '/playground'}>

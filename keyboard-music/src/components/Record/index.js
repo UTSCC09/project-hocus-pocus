@@ -60,8 +60,9 @@ export default function Record({
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      if (isSelected) onSelectSound(null);
-                      else onSelectSound(originalIndex);
+                      if (onSelectSound)
+                        if (isSelected) onSelectSound(null);
+                        else onSelectSound(originalIndex);
                     }}
                   >
                     <div className="sound-text">
