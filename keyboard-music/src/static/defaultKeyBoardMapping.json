@@ -13,7 +13,7 @@
   "Minus": { "function": null, "symbol": "-" },
   "Equal": { "function": null, "symbol": "+" },
   "Backspace": {
-    "function": "delete",
+    "function": null,
     "symbol": "Delete"
   },
 
