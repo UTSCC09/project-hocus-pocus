@@ -4,7 +4,7 @@
 }
 
 .me {
-  margin: 50px;
+  margin: 0px 50px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -44,4 +44,20 @@
   text-align: center;
   margin: auto;
   cursor: pointer;
+}
+
+.heading {
+  font-size: x-large;
+  font-weight: 700;
+  text-align: left;
+  padding: 30px;
+}
+
+.livestream-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 30px;
+  gap: 5px;
 }

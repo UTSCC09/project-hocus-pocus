@@ -456,9 +456,9 @@ function saveRecord(record, title, token) {
     token
   ).then((res) => {
     if (res.data) {
-      console.log(res.data);
+      alert("Record saved!");
     } else {
-      // TODO: handle error
+      alert("Error: " + res);
     }
   });
 }

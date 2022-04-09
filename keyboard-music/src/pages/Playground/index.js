@@ -1,21 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
-import Split from "react-split";
+import React from "react";
 import * as Tone from "tone";
 import "./index.css";
 import Keyboard from "./Keyboard";
-import Timer from "./Timer";
 import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
-import Peer from "peerjs";
-import { Form } from "react-bootstrap";
-import { Navigate } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
 import network from "../../helpers/network";
 
 import {
-  Button,
-  Dropdown,
-  DropdownButton,
   FormControl,
   InputGroup,
 } from "react-bootstrap";
@@ -84,7 +76,6 @@ class PlaygroundPage extends React.Component {
 
       if (/^beat$/.test(assignedKeyFunction)) {
         const beatInterval = (1000 * 60) / this.state.BPM;
-        console.log(this.state.isBeating);
         if (!this.state.isBeating) {
           this.clock = setInterval(() => {
             playKeyPressedAnimation(keyCode);
@@ -105,7 +96,7 @@ class PlaygroundPage extends React.Component {
       playKeyPressedAnimation(keyCode);
 
       if (!note) {
-        console.log("Ignoring key event for key:", e.code);
+        // Ignoring key event for key
       } else {
         synth.triggerAttack(note, Tone.now());
         this.musicEditor.onNewNote(recordEntry(note, "start"));
@@ -117,7 +108,7 @@ class PlaygroundPage extends React.Component {
       }
       removeKeyPressedAnimation(keyCode);
       if (!note) {
-        console.log("Ignoring key event for key:", e.code);
+        // Ignoring key event for key
       } else {
         synth.triggerRelease(note, Tone.now());
         this.musicEditor.onNewNote(recordEntry(note, "end"));

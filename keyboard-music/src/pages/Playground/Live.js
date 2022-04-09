@@ -1,7 +1,6 @@
 import React from "react";
 import Peer from "peerjs";
 import AuthContext from "../../context/auth-context";
-import { Navigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import network from "../../helpers/network";
 import "./live.css";
@@ -31,7 +30,6 @@ export default class Live extends React.Component {
     });
 
     this.peer.on("open", (id) => {
-      console.log(id);
       this.setState({ isReady: true });
     });
 
@@ -39,9 +37,7 @@ export default class Live extends React.Component {
       this.connectedPeers.push(connection);
       this.setState({ connectedCount: this.connectedPeers.length });
 
-      connection.on("data", (data) => {
-        console.log("Possible chat data", data);
-      });
+      connection.on("data", (data) => { });
 
       connection.on("close", () => {
         this.connectedPeers = this.connectedPeers.filter(
@@ -93,7 +89,6 @@ export default class Live extends React.Component {
     network("mutation", `endLiveStream`, `success`, this.context.getToken())
       .then((res) => {
         if (res.data) {
-          console.log(res.data);
           this.setState({ isLive: false });
         }
       })
@@ -104,7 +99,7 @@ export default class Live extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ margin: 30 }}>
         <Button
           disabled={!this.state.isReady}
           onClick={this.state.isLive ? this.stopLive : this.goLive}
@@ -118,11 +113,13 @@ export default class Live extends React.Component {
         </Button>
         <span>
           {
-            this.state.connectedCount > 0 ?
-              this.state.connectedCount === 1 ?
-                `${this.state.connectedCount} people is listening` :
-                `${this.state.connectedCount} people are listening` :
-              `No one is listening`
+            !this.state.isLive ?
+              `You can go live by clicking the button.` :
+              this.state.connectedCount > 0 ?
+                this.state.connectedCount === 1 ?
+                  `${this.state.connectedCount} people is listening` :
+                  `${this.state.connectedCount} people are listening` :
+                `You are live now. People can find you in the Community tab. No one is listening`
           }
         </span>
       </div>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Button, ButtonToolbar } from "react-bootstrap";
+import { Card, Button, Alert } from "react-bootstrap";
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
 import "./index.css";
@@ -106,6 +106,14 @@ class MyRecordsPage extends Component {
 
     return (
       <div className="my-records-page">
+        {
+          this.state.records.length === 0 ?
+            (
+              <Alert variant="info">
+                You have no music records.
+              </Alert>
+            ) : null
+        }
         {this.state.records.map((value, index) => {
           return (
             <Card key={index} className="card">

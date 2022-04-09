@@ -34,13 +34,13 @@ body .btn-success:hover {
 body .btn-danger {
   background-color: rgb(255, 60, 65);
   border-color: rgb(255, 60, 65);
-  color: rgb(33, 37, 41);
+  color: rgb(255, 255, 255);
 }
 
 body .btn-danger:hover {
   background-color: rgb(204, 48, 51);
   border-color: rgb(204, 48, 51);
-  color: rgb(33, 37, 41);
+  color: rgb(255, 255, 255);
 }
 
 body .btn-warning {
