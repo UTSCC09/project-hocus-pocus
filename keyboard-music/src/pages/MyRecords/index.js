@@ -95,6 +95,15 @@ class MyRecordsPage extends Component {
       );
     }
 
+    if (this.state.redirectView) {
+      return (
+        <Navigate
+          to="/view"
+          state={{ recordId: this.state.redirectView }}
+        />
+      );
+    }
+
     return (
       <div className="my-records-page">
         {this.state.records.map((value, index) => {
@@ -111,12 +120,10 @@ class MyRecordsPage extends Component {
                 )}
 
                 <div className="button-group">
-                  <Button
-                    variant="dark"
-                    onClick={() => {
-                      this.checkRecord(value._id);
-                    }}
-                  >
+                  <Button variant="dark" onClick={() => { this.checkRecord(value._id) }}>
+                    Edit
+                  </Button>
+                  <Button variant="dark" onClick={() => { this.setState({ redirectView: value._id }) }}>
                     View
                   </Button>
                 </div>

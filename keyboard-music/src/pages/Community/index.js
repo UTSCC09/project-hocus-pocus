@@ -108,7 +108,6 @@ class CommunityPage extends Component {
     ).then(res => {
       if (res.data) {
         this.setState({ livestreams: res.data.getLiveStreams });
-        console.log(this.state.livestreams);
       }
     })
   }
@@ -123,6 +122,15 @@ class CommunityPage extends Component {
       );
     }
 
+    if (this.state.redirectRecord) {
+      return (
+        <Navigate
+          to="/view"
+          state={{ recordId: this.state.redirectRecord }}
+        />
+      );
+    }
+
     return (
       <div>
         {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })}>{this.state.alert_message}</Alert>}
@@ -132,7 +140,7 @@ class CommunityPage extends Component {
               <Card key={index} className="card">
                 <Card.Title className="card-title">{record.title}</Card.Title>
                 <Card.Text>Author: {record.author}</Card.Text>
-                <Button className="btn" variant="dark">Play Music</Button>
+                <Button className="btn" variant="dark" onClick={() => { this.setState({ redirectRecord: record._id }) }}>Play Music</Button>
                 <div className="heart-div">
                   {record.upvote}
                   {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}

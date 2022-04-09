@@ -33,6 +33,10 @@ export default class MusicEditor extends React.Component {
     });
   };
 
+  setRecordName = (recordName) => {
+    this.setState({ recordName });
+  }
+
   reset = () => {
     this.triggeredForPlay = new Set();
     this.triggeredForRecord = new Set();
@@ -141,7 +145,7 @@ export default class MusicEditor extends React.Component {
         selectedSoundIndex: soundIndex,
         soundEditorValues: {},
       });
-      this.noteEditor.onSelect(null);
+      if (this.noteEditor) this.noteEditor.onSelect(null);
       return;
     }
 
@@ -159,7 +163,7 @@ export default class MusicEditor extends React.Component {
       duration,
     };
 
-    this.noteEditor.onSelect(soundEditorValues);
+    if (this.noteEditor) this.noteEditor.onSelect(soundEditorValues);
 
     this.setState({
       selectedSoundIndex: soundIndex,
@@ -167,9 +171,14 @@ export default class MusicEditor extends React.Component {
   };
 
   save = () => {
+    if (!this.state.recordName) {
+      alert("Please enter a name for the record");
+      return;
+    }
+
     saveRecord(
       this.state.currentRecord,
-      prompt("Enter a name for this record"),
+      this.state.recordName,
       this.context.getToken()
     );
   };
@@ -206,7 +215,7 @@ export default class MusicEditor extends React.Component {
     );
 
     this.setState({ currentRecord: newRecord });
-    this.noteEditor.onSelect(newValues);
+    if (this.noteEditor) this.noteEditor.onSelect(newValues);
   };
 
   onDelete = () => {
@@ -215,7 +224,7 @@ export default class MusicEditor extends React.Component {
     );
 
     this.setState({ currentRecord: newRecord });
-    this.noteEditor.onSelect(null);
+    if (this.noteEditor) this.noteEditor.onSelect(null);
   };
 
   onCreate = (newValues) => {
@@ -241,7 +250,7 @@ export default class MusicEditor extends React.Component {
     this.setState({
       currentRecord: [...this.state.currentRecord, ...newRecords],
     });
-    this.noteEditor.onSelect(null);
+    if (this.noteEditor) this.noteEditor.onSelect(null);
   };
 
   zoom = (diff) => {
@@ -286,13 +295,26 @@ export default class MusicEditor extends React.Component {
           </div>
           <div className="generalTools">
             {this.props.enableEditing ?
-              <Button
-                onClick={this.save}
-                disabled={this.state.isRecording || this.state.isPlaying}
-                variant="success"
-              >
-                Save
-              </Button>
+              <>
+                <InputGroup>
+                  <InputGroup.Text>Record Name</InputGroup.Text>
+                  <FormControl
+                    aria-label="Record Name"
+                    value={this.state.recordName}
+                    placeholder="Untitled"
+                    onChange={(e) => {
+                      this.setState({ recordName: e.target.value });
+                    }}
+                  />
+                  <Button
+                    onClick={this.save}
+                    disabled={this.state.isRecording || this.state.isPlaying}
+                    variant="success"
+                  >
+                    Save
+                  </Button>
+                </InputGroup>
+              </>
               : null}
           </div>
         </div>
