@@ -1,3 +1,8 @@
+.me-page {
+  text-align: center;
+  margin: auto;
+}
+
 .me {
   margin: 50px;
   display: flex;
@@ -23,4 +28,19 @@
   margin: 5px;
   width: 20px;
   height: auto;
+}
+
+.arrows {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  margin: auto;
+}
+
+.arrow {
+  width: 30px;
+  height: auto;
+  text-align: center;
+  margin: auto;
+  cursor: pointer;
 }

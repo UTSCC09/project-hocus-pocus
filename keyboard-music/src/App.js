@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import LoginPage from "./pages/Login";
-import MePage from "./pages/Me";
 import PlaygroundPage from "./pages/Playground";
 import CommunityPage from "./pages/Community";
 import MyRecordsPage from "./pages/MyRecords";
@@ -26,7 +25,7 @@ class App extends Component {
     }
   }
 
-  login = (userId, token, tokenExpiration) => {
+  login = (userId, token) => {
     this.setState({ userId, token });
     window.sessionStorage.setItem("userId", userId);
     window.sessionStorage.setItem("token", token);
@@ -60,7 +59,6 @@ class App extends Component {
           <Routes>
             <Route path="/" element={<CommunityPage />} exact />
             <Route path="/auth" element={<LoginPage />} />
-            <Route path="/me" element={<MePage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/my_records" element={<MyRecordsPage />} />

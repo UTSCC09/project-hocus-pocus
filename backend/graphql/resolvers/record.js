@@ -134,8 +134,8 @@ module.exports = {
       }
 
       const records = await Record.find({ published: true }).sort({ _id: 1 });
-      let endIndex = Math.min(records.length, 10 * args.page);
-      return records.slice(10 * (args.page - 1), endIndex) || [];
+      let endIndex = Math.min(records.length, 8 * args.page);
+      return records.slice(8 * (args.page - 1), endIndex) || [];
     } catch (err) {
       throw err;
     }

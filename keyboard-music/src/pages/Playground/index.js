@@ -47,14 +47,12 @@ class PlaygroundPage extends React.Component {
       network(
         "query",
         `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
-        `_id
-        title
-        published
-        upvote
-        record {offset, sound{note, instrument}, action }`,
+        `title
+        record { offset, sound { note, instrument }, action }`,
         this.context.getToken()
       ).then((res) => {
         this.musicEditor.setRecord(res.data.getRecordById.record);
+        this.musicEditor.setRecordName(res.data.getRecordById.title);
       });
     }
     document.addEventListener("keyup", this.handleKeyUp);

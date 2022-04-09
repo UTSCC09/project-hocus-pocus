@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, Button, Alert } from 'react-bootstrap';
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
-import { SuitHeart, SuitHeartFill } from 'react-bootstrap-icons';
+import { SuitHeart, SuitHeartFill, ArrowRightCircle, ArrowLeftCircle } from 'react-bootstrap-icons';
 
 import "./index.css";
 import withRouter from "../../helpers/withRouter";
@@ -43,7 +43,11 @@ class CommunityPage extends Component {
       this.context.getToken()
     ).then((res) => {
       if (res.data) {
-        this.setState({ records: res.data.getPublishedRecordsByPage });
+        if (res.data.getPublishedRecordsByPage.length === 0) {
+          this.setState({ page: this.state.page-1 });
+        } else {
+          this.setState({ records: res.data.getPublishedRecordsByPage });
+        }
       }
     })
   }
@@ -108,9 +112,17 @@ class CommunityPage extends Component {
     ).then(res => {
       if (res.data) {
         this.setState({ livestreams: res.data.getLiveStreams });
-        console.log(this.state.livestreams);
       }
     })
+  }
+
+  onLeftClicked = () => {
+    this.setState({ page: Math.max(this.state.page - 1, 1) }, () => this.getPublishedRecords());
+  }
+
+  onRightClicked = () => {
+    if (this.state.records.length < 8) return;
+    this.setState({ page: this.state.page+1 }, () => this.getPublishedRecords());
   }
 
   render() {
@@ -123,16 +135,25 @@ class CommunityPage extends Component {
       );
     }
 
+    if (this.state.redirectRecord) {
+      return (
+        <Navigate
+          to="/view"
+          state={{ recordId: this.state.redirectRecord }}
+        />
+      );
+    }
+
     return (
-      <div>
-        {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })}>{this.state.alert_message}</Alert>}
+      <div className="me-page">
+        {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })} dismissible>{this.state.alert_message}</Alert>}
         <div className="me">
           {this.state.records.map((record, index) => {
             return (
               <Card key={index} className="card">
                 <Card.Title className="card-title">{record.title}</Card.Title>
                 <Card.Text>Author: {record.author}</Card.Text>
-                <Button className="btn" variant="dark">Play Music</Button>
+                <Button className="btn" variant="dark" onClick={() => { this.setState({ redirectRecord: record._id }) }}>Play Music</Button>
                 <div className="heart-div">
                   {record.upvote}
                   {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
@@ -141,6 +162,10 @@ class CommunityPage extends Component {
               </Card>
             );
           })}
+        </div>
+        <div className="arrows">
+          <ArrowLeftCircle className="arrow" onClick={this.onLeftClicked} />
+          <ArrowRightCircle className="arrow" onClick={this.onRightClicked} />
         </div>
         {this.state.livestreams.map((livestream, index) => (
           <Button key={index} onClick={() => this.setState({ redirectUser: livestream.user })}>
