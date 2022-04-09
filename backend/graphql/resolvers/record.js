@@ -119,10 +119,6 @@ module.exports = {
   },
 
   getRecordById: async (args, req) => {
-    if (!req.isAuth) {
-      throw new Error("Unauthenticated!");
-    }
-
     const record = await Record.findOne({ _id: args.recordId });
     return { ...record._doc, _id: record.id };
   },
