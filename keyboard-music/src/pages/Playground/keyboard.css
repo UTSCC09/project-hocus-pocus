@@ -1,17 +1,17 @@
 /* code referenced and modified from https://codepen.io/irajsuhail/pen/mYMZVm */
 
 .keyboard {
-  /* horizontally centered */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  margin: auto;
+  width: 1148px;
 
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(30, 30px);
   grid-template-rows: repeat(5, 60px);
   grid-gap: 8px;
+
+  user-select: none;
 }
 
 .key {
@@ -38,13 +38,11 @@
   color: lightcoral;
 }
 
-.key:hover,
 .keyPressed {
   transform: scale(1.1);
   border-color: lightblue;
   box-shadow: 0 0 15px lightblue;
   background: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
 }
 
 .Tab,

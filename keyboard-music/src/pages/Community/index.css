@@ -1,0 +1,46 @@
+.me-page {
+  text-align: center;
+  margin: auto;
+}
+
+.me {
+  margin: 50px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 18rem;
+  height: 10rem;
+  padding: 15px;
+  color: black;
+  margin: 20px 10px;
+  box-shadow: 5px 5px 5px black;
+}
+
+.heart-div {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.heart {
+  margin: 5px;
+  width: 20px;
+  height: auto;
+}
+
+.arrows {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  margin: auto;
+}
+
+.arrow {
+  width: 30px;
+  height: auto;
+  text-align: center;
+  margin: auto;
+  cursor: pointer;
+}

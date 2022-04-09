@@ -17,6 +17,12 @@ class LoginPage extends Component {
 
   static contextType = AuthContext;
 
+  componentDidMount() {
+    if (this.context.getToken()) {
+      this.setState({ redirect: "/community" });
+    }
+  }
+
   signUp = (e) => {
     e.preventDefault();
 
@@ -28,7 +34,8 @@ class LoginPage extends Component {
       "mutation",
       `createUser(userInput: { email: "${this.state.email}", password: "${this.state.password}" })`,
       `_id
-      email`
+      email`,
+      null
     ).then((res) => {
       this.setState({
         email: res.data ? "" : this.state.email,
@@ -53,7 +60,8 @@ class LoginPage extends Component {
       `login(email: "${this.state.email}", password: "${this.state.password}")`,
       `userId
       token
-      tokenExpiration`
+      tokenExpiration`,
+      null
     ).then((res) => {
       if (res.data) {
         let data = res.data.login;
@@ -78,7 +86,7 @@ class LoginPage extends Component {
 
   render() {
     if (this.state.redirect) {
-      return <Navigate to={this.state.redirect} />
+      return <Navigate to={this.state.redirect} />;
     }
 
     return (
@@ -107,7 +115,7 @@ class LoginPage extends Component {
           </Form.Group>
 
           <Button
-            className="btn"
+            className="form-btn"
             variant="primary"
             type="submit"
             onClick={this.signUp}
@@ -115,7 +123,7 @@ class LoginPage extends Component {
             Sign Up
           </Button>
           <Button
-            className="btn"
+            className="form-btn"
             variant="primary"
             type="submit"
             onClick={this.signIn}

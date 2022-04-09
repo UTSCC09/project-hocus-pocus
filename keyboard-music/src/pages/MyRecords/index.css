@@ -1,0 +1,18 @@
+.my-records-page {
+  margin: 50px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 18rem;
+  height: 15rem;
+  color: black;
+  margin: 20px 10px;
+  box-shadow: 5px 5px 5px black;
+}
+
+.button-group {
+  margin: 5px;
+}

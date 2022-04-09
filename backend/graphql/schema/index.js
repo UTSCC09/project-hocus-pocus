@@ -13,17 +13,78 @@ type AuthData {
   tokenExpiration: Int!
 }
 
+type Sound {
+  instrument: String!
+  note: String!
+}
+
+type Note {
+  offset: Int!
+  sound: Sound!
+  action: String!
+}
+
+type Record {
+  _id: ID!
+  title: String!
+  author: String!
+  record: [Note!]!
+  published: Boolean!
+  upvote: Int!
+  date: String!
+}
+
+type Status {
+  success: Boolean!
+}
+
+type Upvote {
+  email: String!
+  recordId: String!
+}
+
+type LiveStream {
+  user: String!
+  code: String!
+  in_progress: Boolean!
+}
+
 input UserInput {
   email: String!
   password: String!
 }
 
+input inputSound {
+  instrument: String!
+  note: String!
+}
+
+input inputNote {
+  offset: Int!
+  sound: inputSound!
+  action: String!
+}
+
 type RootQuery {
   login(email: String!, password: String!): AuthData!
+  getRecordsByAuthor: [Record]!
+  getRecordById(recordId: ID!): Record!
+  getPublishedRecordsByPage(page: Int): [Record]!
+  getUpvotesByUser: [Upvote]!
+  getLiveStreams: [LiveStream]!
+  getLiveByUser(user: String!): LiveStream!
 }
 
 type RootMutation {
   createUser(userInput: UserInput): User!
+  createRecord(record: [inputNote!]!, title: String!): Record!
+  publishRecord(recordId: ID!): Status!
+  unpublishRecord(recordId: ID!): Status!
+  deleteRecord(recordId: ID!): Status!
+  upvoteRecord(recordId: ID!): Status!
+  undoUpvoteRecord(recordId: ID!): Status!
+  startLiveStream(code: String!): LiveStream!
+  endLiveStream: Status!
 }
 
 schema {

@@ -3,11 +3,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import LoginPage from "./pages/Login";
-import MePage from "./pages/Me";
 import PlaygroundPage from "./pages/Playground";
 import CommunityPage from "./pages/Community";
+import MyRecordsPage from "./pages/MyRecords";
+import ViewOnlyPage from "./pages/Playground/ViewOnly";
 import Navigation from "./components/Navigation";
 import AuthContext from "./context/auth-context";
+
 class App extends Component {
   state = {
     token: null,
@@ -16,14 +18,14 @@ class App extends Component {
 
   componentDidMount() {
     if (window.sessionStorage.getItem("token") && window.sessionStorage.getItem("userId")) {
-      this.setState({ 
+      this.setState({
         token: window.sessionStorage.getItem("token"),
         userId: window.sessionStorage.getItem("userId"),
       })
     }
   }
 
-  login = (userId, token, tokenExpiration) => {
+  login = (userId, token) => {
     this.setState({ userId, token });
     window.sessionStorage.setItem("userId", userId);
     window.sessionStorage.setItem("token", token);
@@ -34,13 +36,21 @@ class App extends Component {
     window.sessionStorage.clear();
   };
 
+  getToken = () => {
+    return this.state.token || window.sessionStorage.getItem("token");
+  }
+
+  getUserId = () => {
+    return this.state.userId || window.sessionStorage.getItem("userId");
+  }
+
   render() {
     return (
       <BrowserRouter>
         <AuthContext.Provider
           value={{
-            token: this.state.token,
-            userId: this.state.userId,
+            getToken: this.getToken,
+            getUserId: this.getUserId,
             login: this.login,
             logout: this.logout,
           }}
@@ -49,9 +59,10 @@ class App extends Component {
           <Routes>
             <Route path="/" element={<CommunityPage />} exact />
             <Route path="/auth" element={<LoginPage />} />
-            <Route path="/me" element={<MePage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/community" element={<CommunityPage />} />
+            <Route path="/my_records" element={<MyRecordsPage />} />
+            <Route path="/view" element={<ViewOnlyPage />} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

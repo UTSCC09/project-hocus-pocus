@@ -1,63 +1,113 @@
 # project-hocus-pocus
 
+## Project URL
+**Task:** Provide the link to your deployed application. Please make sure the link works.
+
 https://keyboard-music.yyin.me
 
-### Team registration and project proposal
+## Project Video URL
 
-**Project Title:**
+**Task:** Provide the link to your youtube video. Please make sure the link works.
 
-Keyboard Music
+## Project Description
 
-**Team Member:**
+**Task:** Provide a detailed description of your app
 
-Min Qi Zhang, Yifei Yin, Yiyang Zhou
+## Development
 
-**A description of the web application:**
+**Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used.
 
-The app allows users to compose and perform music using keyboards with customizable options. The app also includes a community section where users can share their creations with others.
+Frontend:
+- React with JavaScript
+- `react-bootstrap`
+- `react-router`
+- `tone`
 
-More specifically, the app is composed of three systems: 
+Backend:
+- Express with JavaScript
+- MongoDB
+- GraphQL
 
-* The composing system: interface that allows users to create, view, edit, and record music. 
 
-* The user account system: users can create an account to save and sync their work across devices.
+## Deployment
+**Task:** Explain how you have deployed your application.
+## Overview
+1. `main` is our development branch
+2. Code on `prod` will be used for automatic deployment
+3. We merge `main` into `prod` when we want to deploy a new version
+4. Anything related with deployment is on `prod` branch only (Dockerfile, docker compose files, nginx config, etc)
 
-* The community system: users can share their work with other users; user can interact with others’ posts.
+## The Automatic Deployment Process
+1. The GitHub workflow is triggered when there is a new commit on `prod`
+2. GitHub workflow clones the code, build the images (`minqiz/backend-prod` and `minqiz/frontend-prod`) and push them to DockerHub
+3. [watchtower](containrrr.dev/watchtower/) checks for new docker images every 5 minutes; it restarts the application when there are new images
+4. The deployed application has now been updated
 
-**A description of the key features that will be completed by the Beta version:**
+## Docker Setup
+We have the following containers in our docker compose (`/deploy-stack.yml` in `prod`) file.
+1. `frontend-prod`
+2. `backend-prod`
+3. `pjs_prod`: PeerJS broker server
+4. `mongodb-prod`: Database for production data
+5. `watchtower`: re-deploy frontend and backend when there is updates
 
-Composing system: use keyboards to play different instruments, record the performances, generate scores and modify existing scores.
+Note
+1. The `/docker-compose.yml` is only for GitHub workflow. This is not used to start the application on the server
+2. The `/deploy-stack.yml` is the actual docker compose file used on the server to deploy everything
 
-Account system: basic operations (sign up, log in, log out, save/load music).
+## Reverse Proxy
+We use nginx as our network reverse proxy.
 
-Community system: sharing posts and posting comments.
+Requests that start with
+- `/api` are forwarded to backend
+- `/myapp` are forwarded to peerjs
+- `/` are fetched from React static files
 
-**A description of the additional features that will be complete by the Final version:**
+## HTTPS and other securities
+The HTTPS certificates are generated and maintained by certbot on the machine. It is not part of the docker file. The certificates are shared with nginx using docker shared volume.
 
-Livestream: users can livestream their performance and users can watch others’ steam.
+Ports other than 80 and 443 are blocked on the machine. No one should be able to reach the database or watchtower directly from outside.
 
-Livestream: users can post text in real-time chats.
+## Maintenance
+**Task:** Explain how you monitor your deployed app to make sure that everything is working as expected.
 
-Composing system: users can customize how keyboards are mapped to music notes or sound effects. Different layouts can be stored and synced across devices.
+- Every time the app is deployed, we do a manual smoke test to make sure the major functionalities are working.
+- Docker will restart the container if it crashes for some reason. However we do not expect and have not seen it happen.
+- We have setup a alert using UptimeRobot which checks the website every 5 minutes to make sure the server is reachable (i.e. Docker has not crashed, Digital Ocean is not down).
 
-**A description of the technology stack that you will use to build and deploy it:**
 
-Front End: React
+## Challenges
 
-Back End: Express
+**Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items.
 
-Data Exchange: GraphQLDatabase: MongoDB
+1.
+2.
+3.
 
-Deployment: Docker, GitHub CI, DigitalOcean/AWS
+## Contributions
+**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number).
 
-**A description of the top 5 technical challenges:**
+Min Qi Zhang:
+- Basic skelton of the frontend and backend
+- Setup the deployment pipeline
+- Setup https, reverse proxy, mongodb
+- Create database schema and API calls
+- Setup frontend page routing
 
-* Generate and mix music effects in real time
+Yifei Yin:
+- Help Min with GitHub actions, deployment pipeline, https, nginx setup
+- Add more functionalities to Music Editor
+- Create UI and algorithm to display the record
+- Look into various libraries for implementing streaming
+- Setup peerjs for streaming
 
-* Record keyboard presses accurately
+Yiyang Zhou:
+- Create initial version of Music Editor
+- Create keyboard layout
+- Create basic css for all pages
+- Look into various libraries and methods for generating tones
 
-* Create an user friendly score editor
 
-* Stream performance in real time with minimal latency
+# One more thing?
 
-* Set up automatic cloud deployment for the app
+**Task:** Any additional comment you want to share with the course staff?

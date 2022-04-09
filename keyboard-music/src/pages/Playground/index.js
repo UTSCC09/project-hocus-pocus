@@ -3,136 +3,187 @@ import Split from "react-split";
 import * as Tone from "tone";
 import "./index.css";
 import Keyboard from "./Keyboard";
+import Timer from "./Timer";
 import MusicEditor from "./MusicEditor";
 import keyMap from "../../static/defaultKeyBoardMapping";
-import Peer from 'peerjs';
+import Peer from "peerjs";
+import { Form } from "react-bootstrap";
+import { Navigate } from "react-router-dom";
+import AuthContext from "../../context/auth-context";
+import network from "../../helpers/network";
 
-const synth = new Tone.Synth().toDestination();
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  FormControl,
+  InputGroup,
+} from "react-bootstrap";
+import beatFile from "../../static/music/beat/beat1.wav";
+import withRouter from "../../helpers/withRouter";
+import Live from './Live';
 
-const PlaygroundPage = (props) => {
-  const [SPN, setSPN] = useState(4);
-  const [simpleRecord, setSimpleRecord] = useState([]); // e.g. ["A1"]
-  const [record, setRecord] = useState([]); // e.g. [{ offset: 0.15, sound: { instrument: "piano", note: "c" }, action: "start" }]
-  const [peerRef] = useState(new Peer());
-  const [connectionRef, setConnectionRef] = useState(null);
+const beatSound = new Audio(beatFile);
+const synth = new Tone.PolySynth().toDestination();
 
-  function playKeyPressedAnimation(code) {
-    const pressedKey = document.querySelector("." + code);
-    pressedKey.classList.add("keyPressed");
+class PlaygroundPage extends React.Component {
+  state = {
+    SPN: 4,
+    isBeating: false,
+    BPM: 60,
+    introducedRecord: [],
+  };
+
+  static contextType = AuthContext;
+
+  musicEditor = null;
+  live = null;
+
+  handleKeyUp = (e) => this.handleKeyUpOrDown("up", e);
+  handleKeyDown = (e) => this.handleKeyUpOrDown("down", e);
+
+  componentDidMount() {
+    if (this.props.router.location.state) {
+      network(
+        "query",
+        `getRecordById(recordId: "${this.props.router.location.state.recordId}")`,
+        `title
+        record { offset, sound { note, instrument }, action }`,
+        this.context.getToken()
+      ).then((res) => {
+        this.musicEditor.setRecord(res.data.getRecordById.record);
+        this.musicEditor.setRecordName(res.data.getRecordById.title);
+      });
+    }
+    document.addEventListener("keyup", this.handleKeyUp);
+    document.addEventListener("keydown", this.handleKeyDown);
   }
 
-  const transmitKeyDown = useCallback((keyCode) => {
-    if (connectionRef) {
-      connectionRef.send(keyCode);
-    }
-  }, [connectionRef]);
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.handleKeyUp);
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
 
-  const keyDoFunction = useCallback(
-    (func) => {
-      if (/^SPN\d$/.test(func)) {
-        return setSPN(parseInt(func.slice(-1)));
-      }
-      switch (func) {
-        case "delete":
-          setSimpleRecord(simpleRecord.slice(0, -1));
-          break;
-        case "newline":
-          setSimpleRecord(simpleRecord.concat(["\n"]));
-          break;
-        case "beat":
-          break;
-        default:
-          if (/^[A-G]b?$/.test(func)) {
-            synth.triggerAttackRelease(func + SPN, "8n");
-            setSimpleRecord(simpleRecord.concat([func + SPN]));
-          } else if (/^[A-G]b?\d$/.test(func)) {
-            synth.triggerAttackRelease(func, "8n");
-            setSimpleRecord(simpleRecord.concat([func]));
-          } else {
-            console.warn("unknown function");
-          }
-      }
-    },
-    [SPN, simpleRecord]
-  );
+  handleKeyUpOrDown = (upOrDown, e) => {
+    if (e.repeat) return;
 
-  const simulateKeyPress = useCallback((keyCode) => {
-    const func = keyMap[keyCode].function;
-    playKeyPressedAnimation(keyCode);
-    keyDoFunction(func);
-  }, [keyDoFunction]);
-
-  useEffect(() => {
-    const keys = Array.from(document.querySelectorAll(".key"));
-    keys.forEach((key) =>
-      key.addEventListener("transitionend", (e) => {
-        if (e.propertyName !== "transform") return;
-        e.target.classList.remove("keyPressed");
-      })
+    const keyCode = e.code;
+    const assignedKeyFunction = keyMap[keyCode]?.function;
+    const note = checkAndStandardizeMusicKeyFunctionName(
+      assignedKeyFunction,
+      this.state.SPN
     );
 
-    const handleKeydown = (e) => {
-      simulateKeyPress(e.code);
-      transmitKeyDown(e.code);
-    };
-    document.addEventListener("keydown", handleKeydown);
-    return () => {
-      document.removeEventListener("keydown", handleKeydown);
-    };
-  }, [keyDoFunction, simpleRecord, simulateKeyPress, transmitKeyDown]);
+    if (upOrDown === "down") {
+      // FUNCTIONS OTHER THAN MUSIC NOTES
+      if (/^SPN\d$/.test(assignedKeyFunction)) {
+        this.setState({ SPN: parseInt(assignedKeyFunction.slice(-1)) });
+        this.musicEditor.onReleaseAll();
+        return;
+      }
 
+      if (/^beat$/.test(assignedKeyFunction)) {
+        const beatInterval = (1000 * 60) / this.state.BPM;
+        console.log(this.state.isBeating);
+        if (!this.state.isBeating) {
+          this.clock = setInterval(() => {
+            playKeyPressedAnimation(keyCode);
+            beatSound.play();
+            setTimeout(() => {
+              removeKeyPressedAnimation(keyCode);
+            }, 0.5 * beatInterval);
+          }, beatInterval);
+          this.setState({ isBeating: true });
+        } else {
+          clearInterval(this.clock);
+          this.setState({ isBeating: false });
+        }
+        return;
+      }
 
-  useEffect(() => {
-    peerRef.on('open', (id) => {
-      console.log(id);
-    });
+      // MUSIC NOTES
+      playKeyPressedAnimation(keyCode);
 
-    peerRef.on('connection', (conn) => {
-      console.log('passive connected');
-      conn.on('data', (data) => {
-        console.log('passive', data);
-        const func = keyMap[data].function;
-        playKeyPressedAnimation(data);
-        keyDoFunction(func);
-      });
-    });
+      if (!note) {
+        console.log("Ignoring key event for key:", e.code);
+      } else {
+        synth.triggerAttack(note, Tone.now());
+        this.musicEditor.onNewNote(recordEntry(note, "start"));
+        this.live.onRecordEntry(recordEntry(note, "start"));
+      }
+    } else if (upOrDown === "up") {
+      if (/^beat$/.test(assignedKeyFunction)) {
+        return;
+      }
+      removeKeyPressedAnimation(keyCode);
+      if (!note) {
+        console.log("Ignoring key event for key:", e.code);
+      } else {
+        synth.triggerRelease(note, Tone.now());
+        this.musicEditor.onNewNote(recordEntry(note, "end"));
+        this.live.onRecordEntry(recordEntry(note, "end"));
+      }
+    } else {
+      console.error("Unknown upOrDown:", upOrDown);
+    }
+  };
 
-    peerRef.on('error', console.log);
-    peerRef.on('close', console.log);
-    peerRef.on('disconnected', console.log);
-
-  }, [keyDoFunction, peerRef]);
-
-  return (
-    <Split
-      style={{ height: "calc(100vh - 3rem)" }}
-      sizes={[90, 10]}
-      minSize={[0, 0]}
-      expandToMin={true}
-      gutterSize={10}
-      gutterAlign="center"
-      direction="vertical"
-      className="playground"
-    >
+  render() {
+    return (
       <div className="playArea">
-        {simpleRecord}
-        <Keyboard SPN={SPN} />
+        <Live ref={(ref) => (this.live = ref)} />
+        <MusicEditor
+          enableEditing={true}
+          ref={(ref) => (this.musicEditor = ref)}
+        />
+        <div>
+          <InputGroup className="beater w-25">
+            <InputGroup.Text>BPM</InputGroup.Text>
+            <FormControl
+              aria-label="BPM"
+              value={this.state.BPM}
+              onChange={(e) => {
+                this.setState({ BPM: e.target.value });
+              }}
+            />
+          </InputGroup>
+        </div>
+        <Keyboard SPN={this.state.SPN} />
       </div>
-      <div>
-        <input onKeyPress={(e) => {
-          if (e.code === 'Enter') {
-            const connection = peerRef.connect(e.target.value);
-            setConnectionRef(connection);
-            connection.on('data', (data) => {
-              console.log('active', data);
-              simulateKeyPress(data);
-            });
-          }
-        }} placeholder="Connect to peer" width={30} />
-        <MusicEditor />
-      </div>
-    </Split>
-  );
-};
+    );
+  }
+}
 
-export default PlaygroundPage;
+function recordEntry(note, action) {
+  return {
+    sound: {
+      instrument: "piano",
+      note,
+    },
+    action,
+  };
+}
+
+function playKeyPressedAnimation(code) {
+  const pressedKey = document.querySelector("." + code);
+  if (!pressedKey) return;
+  pressedKey.classList.add("keyPressed");
+}
+
+function removeKeyPressedAnimation(code) {
+  const pressedKey = document.querySelector("." + code);
+  if (!pressedKey) return;
+  pressedKey.classList.remove("keyPressed");
+}
+
+function checkAndStandardizeMusicKeyFunctionName(func, SPN) {
+  if (/^[A-G]b?$/.test(func)) {
+    return func + SPN;
+  } else if (/^[A-G]b?\d$/.test(func)) {
+    return func;
+  } else {
+    return null;
+  }
+}
+
+export default withRouter(PlaygroundPage);
