@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, Button, Alert } from 'react-bootstrap';
 import network from "../../helpers/network";
 import AuthContext from "../../context/auth-context";
-import { SuitHeart, SuitHeartFill } from 'react-bootstrap-icons';
+import { SuitHeart, SuitHeartFill, ArrowRightCircle, ArrowLeftCircle } from 'react-bootstrap-icons';
 
 import "./index.css";
 import withRouter from "../../helpers/withRouter";
@@ -43,7 +43,11 @@ class CommunityPage extends Component {
       this.context.getToken()
     ).then((res) => {
       if (res.data) {
-        this.setState({ records: res.data.getPublishedRecordsByPage });
+        if (res.data.getPublishedRecordsByPage.length === 0) {
+          this.setState({ page: this.state.page-1 });
+        } else {
+          this.setState({ records: res.data.getPublishedRecordsByPage });
+        }
       }
     })
   }
@@ -113,6 +117,15 @@ class CommunityPage extends Component {
     })
   }
 
+  onLeftClicked = () => {
+    this.setState({ page: Math.max(this.state.page - 1, 1) }, () => this.getPublishedRecords());
+  }
+
+  onRightClicked = () => {
+    if (this.state.records.length < 8) return;
+    this.setState({ page: this.state.page+1 }, () => this.getPublishedRecords());
+  }
+
   render() {
     if (this.state.redirectUser) {
       return (
@@ -124,8 +137,8 @@ class CommunityPage extends Component {
     }
 
     return (
-      <div>
-        {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })}>{this.state.alert_message}</Alert>}
+      <div className="me-page">
+        {this.state.alert_message && <Alert variant="danger" onClose={() => this.setState({ alert_message: "" })} dismissible>{this.state.alert_message}</Alert>}
         <div className="me">
           {this.state.records.map((record, index) => {
             return (
@@ -141,6 +154,10 @@ class CommunityPage extends Component {
               </Card>
             );
           })}
+        </div>
+        <div className="arrows">
+          <ArrowLeftCircle className="arrow" onClick={this.onLeftClicked} />
+          <ArrowRightCircle className="arrow" onClick={this.onRightClicked} />
         </div>
         {this.state.livestreams.map((livestream, index) => (
           <Button key={index} onClick={() => this.setState({ redirectUser: livestream.user })}>
