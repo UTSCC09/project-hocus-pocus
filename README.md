@@ -8,14 +8,29 @@ https://keyboard-music.yyin.me
 ## Project Video URL
 
 **Task:** Provide the link to your youtube video. Please make sure the link works.
+yyin.me/c09-demo
 
 ## Project Description
 
 **Task:** Provide a detailed description of your app
 
+The app allows users to compose and perform music using keyboards. The app also includes a community section where users can share their creations with others.
+
+More specifically, the app is composed of three systems:
+
+* The composing system: interface that allows users to create, view, edit, and record music. The user can also start the live-stream to perform the music.
+
+* The user account system: users can create an account to save their work.
+
+* The community system: users can share their work with other users; users can “like” the records they like.
+
 ## Development
 
 **Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used.
+
+Different from HW, we separated frontend and backend into 2 different folders (`keyboard-music` and `backend`). We started with installing the required dependencies. 
+For frontend, `components` stores the component, `pages` stores the pages, `context` is used to manage the token, `static` contains the static file such as images, keyboard mapping.
+For backend, `graphql/resolver` contains the detailed implementation of APIs, `graphql/schema` defines the what APIs accept and return, `model` defines the schema of tables in database.
 
 Frontend:
 - React with JavaScript
@@ -80,19 +95,20 @@ Ports other than 80 and 443 are blocked on the machine. No one should be able to
 
 **Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items.
 
-1.
-2.
-3.
+1. Deployment
+2. Live Stream
+3. Music Compose System
 
 ## Contributions
 **Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number).
 
 Min Qi Zhang:
-- Basic skelton of the frontend and backend
+- Basic skeleton of the frontend and backend
 - Setup the deployment pipeline
 - Setup https, reverse proxy, mongodb
 - Create database schema and API calls
 - Setup frontend page routing
+- Create skeleton for "My Record" and "Community" page
 
 Yifei Yin:
 - Help Min with GitHub actions, deployment pipeline, https, nginx setup
