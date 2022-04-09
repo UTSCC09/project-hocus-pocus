@@ -116,13 +116,15 @@ export default class Live extends React.Component {
               : "Go Live"
             : "Preparing"}
         </Button>
-        <div>
-          {this.state.connectedCount > 0
-            ? this.state.connectedCount === 1
-              ? `${this.state.connectedCount} people is listening`
-              : `${this.state.connectedCount} people are listening`
-            : `No one is listening`}
-        </div>
+        <span>
+          {
+            this.state.connectedCount > 0 ?
+              this.state.connectedCount === 1 ?
+                `${this.state.connectedCount} people is listening` :
+                `${this.state.connectedCount} people are listening` :
+              `No one is listening`
+          }
+        </span>
       </div>
     );
   }

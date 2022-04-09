@@ -154,10 +154,13 @@ class CommunityPage extends Component {
                 <Card.Title className="card-title">{record.title}</Card.Title>
                 <Card.Text>Author: {record.author}</Card.Text>
                 <Button className="btn" variant="dark" onClick={() => { this.setState({ redirectRecord: record._id }) }}>Play Music</Button>
-                <div className="heart-div">
+                <div className="heart-container">
                   {record.upvote}
-                  {this.state.upvotes.includes(record._id) && <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />}
-                  {!this.state.upvotes.includes(record._id) && <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />}
+                  {
+                    this.state.upvotes.includes(record._id) ?
+                      <SuitHeartFill className="heart" onClick={() => this.undoUpvote(record._id)} />
+                      : <SuitHeart className="heart" onClick={() => this.upvote(record._id)} />
+                  }
                 </div>
               </Card>
             );

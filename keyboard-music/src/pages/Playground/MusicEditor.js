@@ -195,15 +195,15 @@ export default class MusicEditor extends React.Component {
     const newRecord = this.state.currentRecord.map((record, index) =>
       index === this.state.selectedSoundIndex
         ? {
-            offset: newValues.start,
-            sound: {
-              instrument: record.sound.instrument,
-              note: newValues.note,
-            },
-            action: "start",
-          }
+          offset: newValues.start,
+          sound: {
+            instrument: record.sound.instrument,
+            note: newValues.note,
+          },
+          action: "start",
+        }
         : index === endRecordIndex
-        ? {
+          ? {
             offset: newValues.start + newValues.duration,
             sound: {
               instrument: record.sound.instrument,
@@ -211,7 +211,7 @@ export default class MusicEditor extends React.Component {
             },
             action: "end",
           }
-        : record
+          : record
     );
 
     this.setState({ currentRecord: newRecord });
