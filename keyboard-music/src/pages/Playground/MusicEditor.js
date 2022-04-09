@@ -326,7 +326,7 @@ export default class MusicEditor extends React.Component {
           <Record
             record={this.state.currentRecord}
             currentTime={this.state.currentTime}
-            scrollToCurrentTime={this.state.isRecording}
+            scrollToCurrentTime={this.state.isRecording || this.state.isPlaying}
             onClickOnTime={(currentTime) => this.setState({ currentTime })}
             selectedSoundIndex={this.state.selectedSoundIndex}
             onSelectSound={(soundIndex) => this.onSelectSound(soundIndex)}
