@@ -1,0 +1,54 @@
+body .btn-primary {
+  background-color: rgb(33, 37, 41);
+  border-color: rgb(33, 37, 41);
+  color: rgb(255, 255, 255);
+}
+
+body .btn-primary:hover {
+  background-color: rgb(90, 95, 115);
+  border-color: rgb(90, 95, 115);
+}
+
+body .btn-info {
+  background-color: rgb(14, 190, 255);
+  border-color: rgb(14, 190, 255);
+  color: rgb(33, 37, 41);
+}
+
+body .btn-info:hover {
+  background-color: rgb(14, 157, 255);
+  border-color: rgb(14, 157, 255);
+}
+
+body .btn-success {
+  background-color: rgb(55, 216, 108);
+  border-color: rgb(55, 216, 108);
+  color: rgb(33, 37, 41);
+}
+
+body .btn-success:hover {
+  background-color: rgb(36, 140, 70);
+  border-color: rgb(36, 140, 70);
+}
+
+body .btn-danger {
+  background-color: rgb(255, 60, 65);
+  border-color: rgb(255, 60, 65);
+  color: rgb(33, 37, 41);
+}
+
+body .btn-danger:hover {
+  background-color: rgb(204, 48, 51);
+  border-color: rgb(204, 48, 51);
+  color: rgb(33, 37, 41);
+}
+
+body .btn-warning {
+  background-color: rgb(252, 208, 0);
+  border-color: rgb(252, 208, 0);
+}
+
+body .btn-warning:hover {
+  background-color: rgb(201, 165, 0);
+  border-color: rgb(201, 165, 0);
+}
