@@ -96,8 +96,8 @@ Ports other than 80 and 443 are blocked on the machine. No one should be able to
 **Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items.
 
 1. Deployment
-2. Live Stream
-3. Music Compose System
+2. Live Stream with peer.js
+3. Music Compose System, generating notes into graph, and working with sounds.
 
 ## Contributions
 **Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number).
@@ -126,4 +126,4 @@ Yiyang Zhou:
 
 # One more thing?
 
-**Task:** Any additional comment you want to share with the course staff?
+N/A
